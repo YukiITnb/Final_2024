@@ -3,9 +3,11 @@ import React from 'react'
 import { useState, useEffect } from 'react';
 import { db } from '../db/firestore'
 import { collection, getDocs } from 'firebase/firestore';
+import { useNavigation } from '@react-navigation/native';
 
-import Headerbar from '../components/Headerbar'
+import Headerbar from '../components/Headerbar';
 import ProgressComponent from '../components/ProgressBar';
+import Habit from '../components/Habit';
 
 import { icons, COLORS, SIZES, images } from '../constants'
 import { useProgressStore } from '../store/progressStore';
@@ -62,7 +64,7 @@ const Homescr = ({navigation}: any) => {
         <Text style={styles.headertext}>Lv 12</Text>
         </View>
         <Headerbar iconUrl={icons.sort} dimension="60%" handlePress={() => {}}/>
-        <Headerbar iconUrl={icons.plus} dimension="60%" handlePress={() => {}}/>
+        <Headerbar iconUrl={icons.plus} dimension="60%" handlePress={() => navigation.navigate('CreateHabit')}/>
       </View>
       <View style={{ flex: 0.15 }}>
         <View style={styles.containertext}>
@@ -73,7 +75,13 @@ const Homescr = ({navigation}: any) => {
       <ProgressComponent />
       <Button title="Update Progress" onPress={increaseProgress} />
       <Button title="Reset Progress" onPress={resetProgress} />
-      
+      <Habit
+        iconUrl={icons.heart}
+        name="Workout"
+        frequency="Daily"
+        completion={75}
+        timeSpent={30}
+      />
     </View>
   )
 }
