@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, StatusBar, Button } from 'react-native'
 import React from 'react'
 import { useState, useEffect } from 'react';
 import { db } from '../db/firestore'
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, addDoc } from 'firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
 
 import Headerbar from '../components/Headerbar';
@@ -20,8 +20,10 @@ async function getHabits() {
       const data = doc.data();
       return {
         name: data.name,
-        goal: data.goal,
-        time: data.time.toDate().toISOString(),
+        description: data.description,
+        color: data.color,
+        hours: data.hours,
+        minutes: data.minutes,
       };
     });
     return habitList;
@@ -49,14 +51,6 @@ const Homescr = ({navigation}: any) => {
 
   return (
     <View style={styles.container}>
-      {/* {isLoading && <Text>Loading...</Text>}
-      {!isLoading && habits.map((habit, index) => (
-        <View key={index}>
-          <Text>Name: {habit.name}</Text>
-          <Text>Goal: {habit.goal}</Text>
-          <Text>Time: {habit.time}</Text>
-        </View>
-      ))} */}
       <View style={styles.headbar}>
         <Headerbar iconUrl={images.profile} dimension="100%" handlePress={() => {}}/>
         <View style={{ flex: 1 }}>
@@ -75,13 +69,17 @@ const Homescr = ({navigation}: any) => {
       <ProgressComponent />
       <Button title="Update Progress" onPress={increaseProgress} />
       <Button title="Reset Progress" onPress={resetProgress} />
-      <Habit
-        iconUrl={icons.heart}
-        name="Workout"
-        frequency="Daily"
-        completion={75}
-        timeSpent={30}
-      />
+      {isLoading && <Text>Loading...</Text>}
+      {!isLoading && habits.map((habit, index) => (
+        <Habit
+          key={index}
+          iconUrl={icons.heart}
+          name={habit.name}
+          frequency={habit.description}
+          completion={75}
+          timeSpent={30}
+        />
+      ))}
     </View>
   )
 }

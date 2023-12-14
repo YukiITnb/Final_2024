@@ -31,7 +31,6 @@ export default function Example() {
                                 onPress={() => {
                                     setValue(index);
                                     setColor(item);
-                                    console.log(color);
                                 }}>
                                 <View
                                     style={[

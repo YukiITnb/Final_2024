@@ -4,6 +4,10 @@ import React, { useState } from 'react'
 
 import { icons } from '../constants';
 import Colorpicker from '../components/Colorpicker';
+import { useProgressStore } from '../store/progressStore';
+
+import { db } from '../db/firestore'
+import { collection, getDocs, addDoc } from 'firebase/firestore';
 
 const Weekday = [
   {
@@ -38,6 +42,12 @@ const Weekday = [
 
 const CreateHabit = ({navigation}) => {
   const [selectedDays, setSelectedDays] = useState([]);
+  const [hours, setHours] = useState("");
+  const [minutes, setMinutes] = useState("");
+  const color = useProgressStore((state) => state.color);
+
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
 
   const handleDayPress = (id) => {
     if (selectedDays.includes(id)) {
@@ -47,10 +57,35 @@ const CreateHabit = ({navigation}) => {
     }
   };
 
-  const handleSave = () => {
-    console.log(selectedDays);
-    navigation.navigate('Home');
-  }
+  const handleSave = async () => {
+    const habit = {
+      name: name,
+      description: description,
+      color: color,
+      weekday: selectedDays,
+      hours: hours,
+      minutes: minutes,
+    };
+  
+    try {
+      const habitsCollection = collection(db, 'Habit');
+      const docRef = await addDoc(habitsCollection, habit);
+      console.log("Document written with ID: ", docRef.id);
+  
+      // Navigate to the Home screen after the document is added
+      navigation.navigate('Home');
+    } catch (e) {
+      console.error("Error adding document: ", e);
+    }
+  };
+
+  const handleHoursChange = (event) => {
+    setHours(event.target.value);
+  };
+
+  const handleMinutesChange = (event) => {
+    setMinutes(event.target.value);
+  };
   
   return (
     <View style={styles.container}>
@@ -65,7 +100,7 @@ const CreateHabit = ({navigation}) => {
       <View style={styles.form}>
         <View style={styles.inputContainer}>
           <Text style={styles.label}>Tên</Text>
-          <TextInput style={styles.input} placeholder="Ví dụ: Học tiếng Anh" />
+          <TextInput style={styles.input} placeholder="Ví dụ: Học tiếng Anh" value={name} onChangeText={setName}/>
         </View>
 
         <View style={styles.inputContainer}>
@@ -73,6 +108,7 @@ const CreateHabit = ({navigation}) => {
           <TextInput
             style={styles.input}
             placeholder="v.d. Học tiếng Anh 30 phút mỗi ngày"
+            value={description} onChangeText={setDescription}
           />
         </View>
 
@@ -100,6 +136,25 @@ const CreateHabit = ({navigation}) => {
           )}
           keyExtractor={item => item.id}
           horizontal
+          />
+        </View>
+        <Text style={styles.label}>Thời gian thực hiện hàng ngày</Text>
+        <View style={styles.Timeinputcontainer}>
+          <TextInput
+            maxLength={2}
+            keyboardType="numeric"
+            name="hours"
+            onChange={handleHoursChange}
+            defaultValue="00"
+            style={styles.Timeinput}
+          />
+          <TextInput
+            maxLength={2}
+            keyboardType="numeric"
+            name="minutes"
+            onChange={handleMinutesChange}
+            defaultValue="00"
+            style={styles.Timeinput}
           />
         </View>
 
@@ -177,6 +232,18 @@ const styles = StyleSheet.create({
   daytext: {
     fontSize: 14,
     color: "#000000",
+  },
+  Timeinputcontainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  Timeinput: {
+    height: 40,
+    flex: 1,
+    margin: 5,
+    borderWidth: 1,
+    padding: 10,
+    borderColor: '#ccc',
   },
 });
 
