@@ -1,9 +1,9 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
 
-const Habit = ({ iconUrl, name, frequency, completion, timeSpent }) => {
+const Habit = ({ iconUrl, name, frequency, completion, timeSpent, color }) => {
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: color }]}>
       <Image source={{ uri: iconUrl }} style={styles.icon} />
       <View style={styles.textContainer}>
         <Text>{name}</Text>
@@ -29,8 +29,9 @@ const styles = StyleSheet.create({
     borderWidth: 1, 
     borderColor: '#312651',
     borderRadius: 10,
-    backgroundColor: '#FFB6C1',
     padding: 10,
+    width: '95%',
+    alignSelf: 'center',
   },
   icon: {
     width: 30,

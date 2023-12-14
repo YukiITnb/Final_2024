@@ -78,6 +78,7 @@ const Homescr = ({navigation}: any) => {
           frequency={habit.description}
           completion={75}
           timeSpent={30}
+          color='#AOE3F2'
         />
       ))}
     </View>
