@@ -58,7 +58,7 @@ const Homescr = ({navigation}) => {
         <Text style={styles.headertext}>Yuki</Text>
         <Text style={styles.headertext}>Lv 12</Text>
         </View>
-        <Headerbar iconUrl={icons.sort} dimension="60%" handlePress={() => navigation.navigate('StudyDetail')}/>
+        <Headerbar iconUrl={icons.heartOutline} dimension="60%" handlePress={() => navigation.navigate('StudyDetail')}/>
         <Headerbar iconUrl={icons.plus} dimension="60%" handlePress={() => navigation.navigate('CreateHabit')}/>
       </View>
       <View style={{ flex: 0.15 }}>
@@ -70,18 +70,20 @@ const Homescr = ({navigation}) => {
       <ProgressComponent />
       <Button title="Update Progress" onPress={increaseProgress} />
       <Button title="Reset Progress" onPress={resetProgress} />
-      {isLoading && <Text>Loading...</Text>}
-      {!isLoading && habits.map((habit, index) => (
-        <Habit
-          key={index}
-          iconUrl='../../assets/icons/heart.png'
-          name={habit.name}
-          frequency={habit.description}
-          completion={75}
-          timeSpent={30}
-          color='#AOE3F2'
-        />
-      ))}
+      <View style={{ flex: 0.15 }}>
+        {isLoading && <Text>Loading...</Text>}
+        {!isLoading && habits.map((habit, index) => (
+          <Habit
+            key={index}
+            iconUrl={icons.heartOutline}
+            name={habit.name}
+            frequency={habit.description}
+            completion={75}
+            timeSpent={30}
+            color='#AOE3F2'
+          />
+        ))}
+      </View>
     </View>
   )
 }
@@ -92,6 +94,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.lightWhite,
+    padding: 10,
   },
   headbar: {
     flexDirection: 'row', 

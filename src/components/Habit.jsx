@@ -4,7 +4,7 @@ import { StyleSheet, Text, View, Image } from 'react-native';
 const Habit = ({ iconUrl, name, frequency, completion, timeSpent, color }) => {
   return (
     <View style={[styles.container, { backgroundColor: color }]}>
-      <Image source={{ uri: iconUrl }} style={styles.icon} />
+      <Image source={iconUrl} style={styles.icon} />
       <View style={styles.textContainer}>
         <Text>{name}</Text>
         <Text>{frequency}</Text>
@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     borderColor: '#312651',
     borderRadius: 10,
     padding: 10,
-    width: '95%',
+    width: '100%',
     alignSelf: 'center',
   },
   icon: {

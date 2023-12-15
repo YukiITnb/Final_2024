@@ -11,6 +11,7 @@ import chevronLeft from '../../assets/icons/chevron-left.png'
 import chevronRight from '../../assets/icons/chevron-right.png'
 import checkmark from '../../assets/icons/checkmark.png'
 import plus from '../../assets/icons/plus.png'
+import arrow from '../../assets/icons/arrow.png'
 
 export default {
   heart,
@@ -25,5 +26,6 @@ export default {
   chevronRight,
   sort,
   checkmark,
-  plus
+  plus,
+  arrow,
 };

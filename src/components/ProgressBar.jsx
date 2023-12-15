@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
       height: 50,
       borderWidth: 1,
       borderColor: 'gray',
-      borderRadius: 5,
+      borderRadius: 20,
       overflow: 'hidden',
       marginTop: 20,
       marginBottom: 20,
