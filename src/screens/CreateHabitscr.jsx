@@ -1,4 +1,14 @@
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, FlatList, Image, TextInputBase } from 'react-native';
+import { 
+  View, 
+  Text, 
+  TextInput, 
+  StyleSheet, 
+  TouchableOpacity, 
+  FlatList, 
+  Image, 
+  ScrollView, 
+  StatusBar, 
+  SafeAreaView } from 'react-native';
 import React, { useState } from 'react'
 // import TimePicker from 'react-native-picker-select';
 
@@ -88,85 +98,89 @@ const CreateHabit = ({navigation}) => {
   };
   
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.navigate('Home')} >
-            <Image source={icons.chevronLeft} resizeMode='contain' style={{width: 20, height: 20}}/>
-            <Text style={styles.title}>Back</Text>
-        </TouchableOpacity>
-        <Text style={styles.title}>Tạo thói quen</Text>
-      </View>
-
-      <View style={styles.form}>
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Tên</Text>
-          <TextInput style={styles.input} placeholder="Ví dụ: Học tiếng Anh" value={name} onChangeText={setName}/>
-        </View>
-
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Mô tả</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="v.d. Học tiếng Anh 30 phút mỗi ngày"
-            value={description} onChangeText={setDescription}
-          />
-        </View>
-
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Màu sắc</Text>
-          <Colorpicker />
-        </View>
-
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Chọn ngày thực hiện</Text>
-          <FlatList
-          data={Weekday}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              style={[
-                styles.daycontainer,
-                selectedDays.includes(item.id) && { backgroundColor: 'pink' },
-              ]}
-              onPress={() => handleDayPress(item.id)}
-            >
-              <Text style={[styles.daytext, selectedDays.includes(item.id) && { color: 'white' }]}>
-                {item.name}
-              </Text>
-            </TouchableOpacity>
-          )}
-          keyExtractor={item => item.id}
-          horizontal
-          />
-        </View>
-        <Text style={styles.label}>Thời gian thực hiện hàng ngày</Text>
-        <View style={styles.Timeinputcontainer}>
-          <TextInput
-            maxLength={2}
-            keyboardType="numeric"
-            name="hours"
-            onChange={handleHoursChange}
-            defaultValue="00"
-            style={styles.Timeinput}
-          />
-          <TextInput
-            maxLength={2}
-            keyboardType="numeric"
-            name="minutes"
-            onChange={handleMinutesChange}
-            defaultValue="00"
-            style={styles.Timeinput}
-          />
-        </View>
-
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Nhắc nhở</Text>
-          <TouchableOpacity style={styles.switch} onPress={handleSave}>
-            <Text style={styles.switchText}>Save</Text>
+    <SafeAreaView style={{ flex: 1 }}>
+      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+        <View>
+          <TouchableOpacity onPress={() => navigation.navigate('Home')} style={styles.backbnt}>
+              <Image source={icons.chevronLeft} resizeMode='contain' style={{width: 20, height: 20}}/>
+              <Text style={styles.title}>Back</Text>
           </TouchableOpacity>
         </View>
+        <View style={styles.header}>
+          <Text style={styles.title}>Tạo thói quen</Text>
+        </View>
 
-      </View>
-    </View>
+        <View style={styles.form}>
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Tên</Text>
+            <TextInput style={styles.input} placeholder="Ví dụ: Học tiếng Anh" value={name} onChangeText={setName}/>
+          </View>
+
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Mô tả</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="v.d. Học tiếng Anh 30 phút mỗi ngày"
+              value={description} onChangeText={setDescription}
+            />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Màu sắc</Text>
+            <Colorpicker />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Chọn ngày thực hiện</Text>
+            <FlatList
+            data={Weekday}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                style={[
+                  styles.daycontainer,
+                  selectedDays.includes(item.id) && { backgroundColor: 'pink' },
+                ]}
+                onPress={() => handleDayPress(item.id)}
+              >
+                <Text style={[styles.daytext, selectedDays.includes(item.id) && { color: 'white' }]}>
+                  {item.name}
+                </Text>
+              </TouchableOpacity>
+            )}
+            keyExtractor={item => item.id}
+            horizontal
+            />
+          </View>
+          <Text style={styles.label}>Thời gian thực hiện hàng ngày</Text>
+          <View style={styles.Timeinputcontainer}>
+            <TextInput
+              maxLength={2}
+              keyboardType="numeric"
+              name="hours"
+              onChange={handleHoursChange}
+              defaultValue="00"
+              style={styles.Timeinput}
+            />
+            <TextInput
+              maxLength={2}
+              keyboardType="numeric"
+              name="minutes"
+              onChange={handleMinutesChange}
+              defaultValue="00"
+              style={styles.Timeinput}
+            />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Nhắc nhở</Text>
+            <TouchableOpacity style={styles.switch} onPress={handleSave}>
+              <Text style={styles.switchText}>Save</Text>
+            </TouchableOpacity>
+          </View>
+
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
@@ -174,7 +188,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    padding: 20,
+    padding: 10,
   },
   header: {
     marginBottom: 20,
@@ -245,6 +259,10 @@ const styles = StyleSheet.create({
     padding: 10,
     borderColor: '#ccc',
   },
+  backbnt: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  }
 });
 
 export default CreateHabit

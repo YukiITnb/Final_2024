@@ -2,10 +2,7 @@ import React from 'react';
 import {
     StyleSheet,
     View,
-    Text,
     TouchableWithoutFeedback,
-    TouchableOpacity,
-    SafeAreaView,
 } from 'react-native';
 
 import { PastelColors } from '../constants/theme';
@@ -21,7 +18,7 @@ export default function Example() {
     const color = useProgressStore((state) => state.color);
 
     return (
-        <SafeAreaView style={{ flex: 1, marginTop: 12 }}>
+        <View style={{ flex: 1, marginTop: 12 }}>
             <View style={styles.group}>
                 {colors.map((item, index) => {
                     const isActive = value === index;
@@ -46,7 +43,7 @@ export default function Example() {
                     );
                 })}
             </View>
-        </SafeAreaView>
+        </View>
     );
 }
 

@@ -51,13 +51,14 @@ const Homescr = ({navigation}) => {
 
   return (
     <View style={styles.container}>
+      <StatusBar />
       <View style={styles.headbar}>
         <Headerbar iconUrl={images.profile} dimension="100%" handlePress={() => {}}/>
         <View style={{ flex: 1 }}>
         <Text style={styles.headertext}>Yuki</Text>
         <Text style={styles.headertext}>Lv 12</Text>
         </View>
-        <Headerbar iconUrl={icons.sort} dimension="60%" handlePress={() => {}}/>
+        <Headerbar iconUrl={icons.sort} dimension="60%" handlePress={() => navigation.navigate('StudyDetail')}/>
         <Headerbar iconUrl={icons.plus} dimension="60%" handlePress={() => navigation.navigate('CreateHabit')}/>
       </View>
       <View style={{ flex: 0.15 }}>
@@ -73,7 +74,7 @@ const Homescr = ({navigation}) => {
       {!isLoading && habits.map((habit, index) => (
         <Habit
           key={index}
-          iconUrl={icons.heart}
+          iconUrl='../../assets/icons/heart.png'
           name={habit.name}
           frequency={habit.description}
           completion={75}
@@ -90,8 +91,7 @@ export default Homescr
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.white,
-    paddingTop: StatusBar.currentHeight,
+    backgroundColor: COLORS.lightWhite,
   },
   headbar: {
     flexDirection: 'row', 
