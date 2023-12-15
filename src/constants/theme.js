@@ -45,18 +45,24 @@ const SHADOWS = {
 };
 
 const PastelColors = [
-  '#6874e7',
-  '#b8304f',
-  '#758E4F',
-  '#fa3741',
-  '#F26419',
-  '#F6AE2D',
-  '#DFAEB4',
-  '#7A93AC',
+  '#B8E1FF',
+  '#CED1E6',
+  '#F5FCFF',
+  '#88F9F9',
+  '#D5BDD5',
+  '#BFABDC',
+  '#EEDCCE',
+  '#FEAFA2',
   '#33658A',
-  '#3d2b56',
-  '#42273B',
-  '#171A21',
+  '#ECA6CA',
+  '#FFDCE3',
+  '#838BED',
+  '#F9E8E2',
+  '#FFD8B9',
+  '#B1CAE9',
+  '#06A9AE',
+  '#B12051',
+  '#011F82',
 ];
 
 export { COLORS, SIZES, SHADOWS, PastelColors };
