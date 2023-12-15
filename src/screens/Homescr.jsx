@@ -33,7 +33,7 @@ async function getHabits() {
   }
 }
 
-const Homescr = ({navigation}: any) => {
+const Homescr = ({navigation}) => {
   const [habits, setHabits] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
