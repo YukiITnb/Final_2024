@@ -1,19 +1,21 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 
-const Habit = ({ iconUrl, name, frequency, completion, timeSpent, color }) => {
+const Habit = ({ iconUrl, name, frequency, completion, timeSpent, color, navigation, habit_id }) => {
   return (
-    <View style={[styles.container, { backgroundColor: color }]}>
-      <Image source={iconUrl} style={styles.icon} />
-      <View style={styles.textContainer}>
-        <Text>{name}</Text>
-        <Text>{frequency}</Text>
+    <TouchableOpacity onPress={() => navigation.navigate('StudyDetail', { habit_id })}>
+      <View style={[styles.container, { backgroundColor: color }]}>
+        <Image source={iconUrl} style={styles.icon} />
+        <View style={styles.textContainer}>
+          <Text>{name}</Text>
+          <Text>{frequency}</Text>
+        </View>
+        <View style={styles.rightContainer}>
+          <Text>{`${completion}%`}</Text>
+          <Text>{`${timeSpent} minutes`}</Text>
+        </View>
       </View>
-      <View style={styles.rightContainer}>
-        <Text>{`${completion}%`}</Text>
-        <Text>{`${timeSpent} minutes`}</Text>
-      </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

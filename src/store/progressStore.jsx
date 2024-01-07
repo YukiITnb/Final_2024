@@ -7,6 +7,8 @@ export const useProgressStore = create(
     (set) => ({
       progress: 0,
       color: '',
+      refresh: false,
+      setRefresh: (refresh) => set({ refresh }),
       setColor: (color) => set({ color }),
       increaseProgress: () =>
         set((state) => ({ progress: state.progress < 100 ? state.progress + 10 : state.progress })),

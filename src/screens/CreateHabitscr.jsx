@@ -52,9 +52,11 @@ const Weekday = [
 
 const CreateHabit = ({navigation}) => {
   const [selectedDays, setSelectedDays] = useState([]);
-  const [hours, setHours] = useState("");
-  const [minutes, setMinutes] = useState("");
+  const [hours_input, setHours] = useState("");
+  const [minutes_input, setMinutes] = useState("");
   const color = useProgressStore((state) => state.color);
+  const refresh = useProgressStore((state) => state.refresh);
+  const setRefresh = useProgressStore((state) => state.setRefresh);
 
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -67,21 +69,29 @@ const CreateHabit = ({navigation}) => {
     }
   };
 
+
   const handleSave = async () => {
-    const habit = {
-      name: name,
-      description: description,
-      color: color,
-      weekday: selectedDays,
-      hours: hours,
-      minutes: minutes,
-    };
-  
     try {
       const habitsCollection = collection(db, 'Habit');
+      const querySnapshot = await getDocs(habitsCollection);
+      const currentCount = querySnapshot.size;
+      const nextId = currentCount + 1;
+
+      const habit = {
+        habit_id: nextId,
+        name: name,
+        description: description,
+        color: color,
+        weekday: selectedDays,
+        hours: hours_input,
+        minutes: minutes_input,
+      };
+
       const docRef = await addDoc(habitsCollection, habit);
       console.log("Document written with ID: ", docRef.id);
-  
+
+      setRefresh(!refresh);
+
       // Navigate to the Home screen after the document is added
       navigation.navigate('Home');
     } catch (e) {
@@ -89,12 +99,12 @@ const CreateHabit = ({navigation}) => {
     }
   };
 
-  const handleHoursChange = (event) => {
-    setHours(event.target.value);
+  const handleHoursChange = (text) => {
+    setHours(text);
   };
 
-  const handleMinutesChange = (event) => {
-    setMinutes(event.target.value);
+  const handleMinutesChange = (text) => {
+    setMinutes(text);
   };
   
   return (
@@ -157,7 +167,7 @@ const CreateHabit = ({navigation}) => {
               maxLength={2}
               keyboardType="numeric"
               name="hours"
-              onChange={handleHoursChange}
+              onChangeText={handleHoursChange}
               defaultValue="00"
               style={styles.Timeinput}
             />
@@ -165,7 +175,7 @@ const CreateHabit = ({navigation}) => {
               maxLength={2}
               keyboardType="numeric"
               name="minutes"
-              onChange={handleMinutesChange}
+              onChangeText={handleMinutesChange}
               defaultValue="00"
               style={styles.Timeinput}
             />

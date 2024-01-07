@@ -1,18 +1,74 @@
 import { Text, View, StyleSheet, Button, SafeAreaView, TouchableOpacity, Image } from 'react-native';
 import { CountdownCircleTimer } from 'react-native-countdown-circle-timer';
 import React from 'react'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+
+import { db } from '../db/firestore'
+import { collection, getDocs, updateDoc, doc, where, query } from 'firebase/firestore';
 
 import { icons, COLORS, SIZES, images } from '../constants'
 
-const StudyDetailscr = ({navigation}) => {
+const StudyDetailscr = ({navigation, route}) => {
+  const { habit_id } = route.params;
   const [isPlaying, setIsPlaying] = useState(true)
+  const [time_duration, setTime] = useState(0)
+  const [time_total, setTimeTotal] = useState(0)
   const [remainingTimes, setRemainingTimes] = useState(0);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const habitQuery = query(collection(db, 'Habit'), where('habit_id', '==', habit_id));
+        const habitDocs = await getDocs(habitQuery);
+
+        if (habitDocs.size > 0) {
+          const habitDoc = habitDocs.docs[0];
+
+          const repeatQuery = query(
+            collection(habitDoc.ref, 'repeat'),
+            where('day', '==', '1_7')
+          );
+          const repeatDocs = await getDocs(repeatQuery);
+
+          if (repeatDocs.size > 0) {
+            const repeatDoc = repeatDocs.docs[0]; 
+
+            console.log('Document data:', repeatDoc.data());
+            setTime(repeatDoc.data().time_remain);
+            setTimeTotal(repeatDoc.data().time);
+          } else {
+            console.log('No such document in repeat');
+          }
+        } else {
+          console.log('No such document in Habit collection with habit_id:', habit_id);
+        }
+      } catch (error) {
+        console.error('Error getting documents:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const handleClick = async () => {
+    setIsPlaying(prev => !prev)
+  
+    const docRef = doc(db, 'Japan', '14_12');
+    await updateDoc(docRef, {
+      time_remain: remainingTimes,
+      progress: (remainingTimes / time_total) * 100,
+    });
+  };
+
+  const handleBack = () => {
+    navigation.navigate('Home');
+    handleClick();
+  }
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.backbnt}>
-        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+        <TouchableOpacity onPress={handleBack}>
           <Image source={icons.arrow} resizeMode='contain' style={{ width: 30, height: 20 }} />
         </TouchableOpacity>
         <Text style={styles.title}>Học tiếng Anh</Text>
@@ -21,7 +77,7 @@ const StudyDetailscr = ({navigation}) => {
       <View style={styles.countdowncontainer}>
         <CountdownCircleTimer
           isPlaying={isPlaying}
-          duration={100}
+          duration={time_duration}
           size={300}
           trailStrokeWidth={25}
           strokeWidth={20}
@@ -33,7 +89,10 @@ const StudyDetailscr = ({navigation}) => {
         {({ remainingTime }) => {
           const minutes = Math.floor(remainingTime / 60);
           const seconds = remainingTime % 60;
-          setRemainingTimes(remainingTime);
+
+          useEffect(() => {
+            setRemainingTimes(remainingTime);
+          }, [remainingTime]);
 
           return <Text style={styles.text_2}>{minutes}:{seconds}</Text>;
         }}
@@ -41,7 +100,7 @@ const StudyDetailscr = ({navigation}) => {
     </View>
     <Text style={styles.text_1}>Well Done!</Text>
     <Text style={styles.text_1}>How about a break?</Text>
-    <TouchableOpacity onPress={() => setIsPlaying(prev => !prev)} style={styles.button}>
+    <TouchableOpacity onPress={handleClick} style={styles.button}>
       <Text style={styles.text}>Break</Text>
     </TouchableOpacity>
     <View style={styles.detailscontainer}>
