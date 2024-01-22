@@ -8,12 +8,21 @@ import { collection, getDocs, updateDoc, doc, where, query } from 'firebase/fire
 
 import { icons, COLORS, SIZES, images } from '../constants'
 
+import { useProgressStore } from '../store/progressStore';
+
 const StudyDetailscr = ({navigation, route}) => {
-  const { habit_id } = route.params;
-  const [isPlaying, setIsPlaying] = useState(true)
+  const { habit_id, habit_name } = route.params;
+  const [isPlaying, setIsPlaying] = useState(false)
+  const [btntext, setBtntext] = useState('Start')
+  const [breaktime, setBreaktime] = useState(0)
   const [time_duration, setTime] = useState(0)
   const [time_total, setTimeTotal] = useState(0)
   const [remainingTimes, setRemainingTimes] = useState(0);
+  const setRefresh = useProgressStore((state) => state.setRefresh);
+  const today = useProgressStore((state) => state.today);
+
+  const [repeatDoc, setRepeatDoc] = useState(null);
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -26,16 +35,17 @@ const StudyDetailscr = ({navigation, route}) => {
 
           const repeatQuery = query(
             collection(habitDoc.ref, 'repeat'),
-            where('day', '==', '1_7')
+            where('day', '==', today)
           );
           const repeatDocs = await getDocs(repeatQuery);
 
           if (repeatDocs.size > 0) {
             const repeatDoc = repeatDocs.docs[0]; 
+            setRepeatDoc(repeatDoc);
 
-            console.log('Document data:', repeatDoc.data());
             setTime(repeatDoc.data().time_remain);
             setTimeTotal(repeatDoc.data().time);
+            setBreaktime(repeatDoc.data().break_time);
           } else {
             console.log('No such document in repeat');
           }
@@ -52,15 +62,21 @@ const StudyDetailscr = ({navigation, route}) => {
 
   const handleClick = async () => {
     setIsPlaying(prev => !prev)
-  
-    const docRef = doc(db, 'Japan', '14_12');
-    await updateDoc(docRef, {
+    setBtntext(prev => prev === 'Start' ? 'Break' : 'Start')
+    
+    if (btntext === 'Break') {
+      setBreaktime(prev => prev + 1)
+    }
+    
+    await updateDoc(repeatDoc.ref, {
       time_remain: remainingTimes,
-      progress: (remainingTimes / time_total) * 100,
+      progress: 100 - (remainingTimes / time_total) * 100,
+      break_time: breaktime,
     });
   };
 
   const handleBack = () => {
+    setRefresh(true);
     navigation.navigate('Home');
     handleClick();
   }
@@ -71,7 +87,7 @@ const StudyDetailscr = ({navigation, route}) => {
         <TouchableOpacity onPress={handleBack}>
           <Image source={icons.arrow} resizeMode='contain' style={{ width: 30, height: 20 }} />
         </TouchableOpacity>
-        <Text style={styles.title}>Học tiếng Anh</Text>
+        <Text style={styles.title}>{habit_name}</Text>
         <View style={{ width: 30, height: 20 }}></View>
       </View>
       <View style={styles.countdowncontainer}>
@@ -101,14 +117,14 @@ const StudyDetailscr = ({navigation, route}) => {
     <Text style={styles.text_1}>Well Done!</Text>
     <Text style={styles.text_1}>How about a break?</Text>
     <TouchableOpacity onPress={handleClick} style={styles.button}>
-      <Text style={styles.text}>Break</Text>
+      <Text style={styles.text}>{btntext}</Text>
     </TouchableOpacity>
     <View style={styles.detailscontainer}>
-      <Text style={styles.text_details}>Thời gian mục tiêu: 100</Text>
+      <Text style={styles.text_details}>Thời gian mục tiêu: {time_total}</Text>
       <Text style={styles.text_details}>Thời gian còn lại: {remainingTimes}</Text>
-      <Text style={styles.text_details}>Số lần nghỉ: 2</Text>
-      <Text style={styles.text_details}>Thời gian bắt đầu: 10:00:00</Text>
-      <Text style={styles.text_details}>Thời gian kết thúc\tạm nghỉ: 11:00:00</Text>
+      <Text style={styles.text_details}>Số lần nghỉ: {breaktime}</Text>
+      {/* <Text style={styles.text_details}>Thời gian bắt đầu: 10:00:00</Text>
+      <Text style={styles.text_details}>Thời gian kết thúc\tạm nghỉ: 11:00:00</Text> */}
     </View>
   </SafeAreaView>
   )

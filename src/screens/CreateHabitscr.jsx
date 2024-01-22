@@ -52,11 +52,12 @@ const Weekday = [
 
 const CreateHabit = ({navigation}) => {
   const [selectedDays, setSelectedDays] = useState([]);
-  const [hours_input, setHours] = useState("");
-  const [minutes_input, setMinutes] = useState("");
+  const [hours_input, setHours] = useState("0");
+  const [minutes_input, setMinutes] = useState("0");
   const color = useProgressStore((state) => state.color);
   const refresh = useProgressStore((state) => state.refresh);
   const setRefresh = useProgressStore((state) => state.setRefresh);
+  const today = useProgressStore((state) => state.today);
 
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -90,7 +91,18 @@ const CreateHabit = ({navigation}) => {
       const docRef = await addDoc(habitsCollection, habit);
       console.log("Document written with ID: ", docRef.id);
 
-      setRefresh(!refresh);
+      const repeatCollection = collection(docRef, 'repeat');
+      const repeatData = {
+        break_time: 0,
+        complete: false,
+        day: today,
+        progress: 0,
+        time: (parseInt(habit.hours) * 60 + parseInt(habit.minutes)) * 60,
+        time_remain: (parseInt(habit.hours) * 60 + parseInt(habit.minutes)) * 60,
+      };
+      await addDoc(repeatCollection, repeatData);
+
+      setRefresh(true);
 
       // Navigate to the Home screen after the document is added
       navigation.navigate('Home');

@@ -8,18 +8,19 @@ const screenWidth = Dimensions.get("window").width;
 
 const Linechartcpn = () => {
     const barData = [
-        { value: 250, label: 'T2' },
-        { value: 500, label: 'T3', frontColor: '#177AD5' },
-        { value: 745, label: 'T4', frontColor: '#177AD5' },
-        { value: 320, label: 'T5' },
-        { value: 600, label: 'T6', frontColor: '#177AD5' },
-        { value: 256, label: 'T7' },
-        { value: 300, label: 'CN' },
+        { value: 1, label: 'T2' },
+        { value: 2, label: 'T3', frontColor: '#177AD5' },
+        { value: 1.3, label: 'T4', frontColor: '#177AD5' },
+        { value: 3, label: 'T5' },
+        { value: 0.5, label: 'T6', frontColor: '#177AD5' },
+        { value: 1, label: 'T7' },
+        { value: 0, label: 'CN' },
     ];
     return (
         <View style={styles.container}>
             <BarChart
                 barWidth={25}
+                maxValue={3}
                 barBorderRadius={4}
                 frontColor="lightgray"
                 data={barData}
@@ -28,6 +29,7 @@ const Linechartcpn = () => {
                 noOfSections={4}
                 hideRules
                 spacing={10}
+                isAnimated
             />
         </View>
     );

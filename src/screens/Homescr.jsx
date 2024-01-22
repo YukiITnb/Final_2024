@@ -17,6 +17,7 @@ const Homescr = ({navigation}) => {
   const [habits, setHabits] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const refresh = useProgressStore((state) => state.refresh);
+  const setRefresh = useProgressStore((state) => state.setRefresh);
 
   async function getHabits() {
     try {
@@ -25,7 +26,7 @@ const Homescr = ({navigation}) => {
       const habitList = habitSnapshot.docs.map(doc => {
         const data = doc.data();
         return {
-          name: data.name,
+          habit_name: data.name,
           description: data.description,
           color: data.color,
           hours: data.hours,
@@ -45,6 +46,7 @@ const Homescr = ({navigation}) => {
       setHabits(habitList);
       setIsLoading(false);
     });
+    setRefresh(false);
   }, [refresh]);
 
   const setProgress = useProgressStore((state) => state.setProgress);
@@ -80,11 +82,9 @@ const Homescr = ({navigation}) => {
             <Habit
               key={index}
               iconUrl={icons.heartOutline}
-              name={habit.name}
+              habit_name={habit.habit_name}
               frequency={habit.description}
-              completion={75}
-              timeSpent={30}
-              color='#AOE3F2'
+              color={habit.color}
               navigation={navigation}
               habit_id={habit.habit_id}
             />

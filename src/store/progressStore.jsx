@@ -8,6 +8,8 @@ export const useProgressStore = create(
       progress: 0,
       color: '',
       refresh: false,
+      today: '',
+      setToday: (today) => set({ today }),
       setRefresh: (refresh) => set({ refresh }),
       setColor: (color) => set({ color }),
       increaseProgress: () =>
