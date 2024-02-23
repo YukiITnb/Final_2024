@@ -16,6 +16,10 @@ export const useProgressStore = create(
         set((state) => ({ progress: state.progress < 100 ? state.progress + 10 : state.progress })),
       resetProgress: () => set({ progress: 0 }),
       setProgress: (newProgress) => set({ progress: newProgress }),
+      isAuthenticated: false,
+      setIsAuthenticated: (isAuthenticated) => set({ isAuthenticated }),
+      uid: '',
+      setUid: (uid) => set({ uid }),
     }),
     {
       name: 'progress-app',

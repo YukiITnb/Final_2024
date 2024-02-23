@@ -1,13 +1,44 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import Homescr from '../screens/Homescr'
 import Statisticscr from '../screens/Statisticscr'
 import Calendarscr from '../screens/Calendarscr'
 import Settingscr from '../screens/Settingscr'
+import PickGroup from '../screens/PickGroupscr'
 import { MaterialCommunityIcons  } from '@expo/vector-icons'
 
 const Tab = createBottomTabNavigator()
+
+const TopTabs = createMaterialTopTabNavigator();
+
+function TopTabsGroup() {
+  return (
+    <TopTabs.Navigator
+      screenOptions={{
+        tabBarLabelStyle: {
+          textTransform: "capitalize",
+          fontWeight: "bold",
+        },
+        tabBarIndicatorStyle: {
+          height: 5,
+          borderRadius: 5,
+          backgroundColor: "#1DA1F2",
+        },
+      }}
+    >
+      <TopTabs.Screen
+        name="main"
+        component={PickGroup}
+        options={{
+          tabBarLabel: "Group",
+        }}
+      />
+      <TopTabs.Screen name="Following" component={PickGroup} />
+    </TopTabs.Navigator>
+  );
+}
 
 const TabNavigator = () => {
   return (
@@ -56,12 +87,12 @@ const TabNavigator = () => {
             </View>
           ),
         }}/>
-      <Tab.Screen name="Setting" component={Settingscr} options={{
-          tabBarLabel: 'Setting',
+      <Tab.Screen name="Group" component={TopTabsGroup} options={{
+          tabBarLabel: 'Group',
           tabBarIcon: ({ color, size }) => (
             <View style={{alignItems: "center", justifyContent: "center", top: 10}}>
-                <MaterialCommunityIcons name="earth" color={color} size={size} />
-                <Text style={{fontSize: 12, color: "#16247d"}}>Setting</Text>
+                <MaterialCommunityIcons name="account-group-outline" color={color} size={size} />
+                <Text style={{fontSize: 12, color: "#16247d"}}>Group</Text>
             </View>
           ),
         }}/>

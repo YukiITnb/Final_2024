@@ -6,6 +6,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import TabNavigator from './src/TavNavigator/TabNavigator';
 import StudyDetailscr from './src/screens/StudyDetailscr';
 import CreateHabit from './src/screens/CreateHabitscr';
+import Loginscr from './src/screens/Loginscr';
+import Signupscr from './src/screens/Signupscr';
 import { useProgressStore } from './src/store/progressStore';
 import * as SplashScreen from 'expo-splash-screen';
 
@@ -15,6 +17,7 @@ SplashScreen.preventAutoHideAsync();
 export default function App() {
   const [appIsReady, setAppIsReady] = useState(false);
   const setToday = useProgressStore(state => state.setToday);
+  const isAuthenticated = useProgressStore(state => state.isAuthenticated);
   useEffect(() => {
     async function prepare() {
       try {
@@ -45,9 +48,18 @@ export default function App() {
   return (
     <NavigationContainer onReady={onLayoutRootView}>
       <Stack.Navigator screenOptions={{headerShown: false}}>
-        <Stack.Screen name="Tab" component={TabNavigator} options={{animation: 'slide_from_bottom'}}/>
-        <Stack.Screen name="StudyDetail" component={StudyDetailscr} options={{animation: 'slide_from_bottom'}}/>
-        <Stack.Screen name="CreateHabit" component={CreateHabit} options={{animation: 'slide_from_bottom'}}/>
+        {isAuthenticated ? (
+          <>
+            <Stack.Screen name="Tab" component={TabNavigator} options={{animation: 'slide_from_bottom'}}/>
+            <Stack.Screen name="StudyDetail" component={StudyDetailscr} options={{animation: 'slide_from_bottom'}}/>
+            <Stack.Screen name="CreateHabit" component={CreateHabit} options={{animation: 'slide_from_bottom'}}/>
+          </>
+        ) : (
+          <>
+            <Stack.Screen name="Login" component={Loginscr} options={{animation: 'slide_from_bottom'}}/>
+            <Stack.Screen name="Signup" component={Signupscr} options={{animation: 'slide_from_bottom'}}/>
+          </>
+        )}
       </Stack.Navigator>
     </NavigationContainer>
   );

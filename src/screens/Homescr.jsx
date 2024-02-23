@@ -19,6 +19,10 @@ const Homescr = ({navigation}) => {
   const refresh = useProgressStore((state) => state.refresh);
   const setRefresh = useProgressStore((state) => state.setRefresh);
 
+  const setIsAuthenticated = useProgressStore((state) => state.setIsAuthenticated);
+  const uid = useProgressStore((state) => state.uid);
+  console.log('uid:', uid);
+
   async function getHabits() {
     try {
       const habitsCollection = collection(db, 'Habit');
@@ -63,7 +67,7 @@ const Homescr = ({navigation}) => {
         <Text style={styles.headertext}>Yuki</Text>
         <Text style={styles.headertext}>Lv 12</Text>
         </View>
-        <Headerbar iconUrl={icons.heartOutline} dimension="60%" handlePress={() => navigation.navigate('StudyDetail')}/>
+        <Headerbar iconUrl={icons.heartOutline} dimension="60%" handlePress={() => setIsAuthenticated(false)}/>
         <Headerbar iconUrl={icons.plus} dimension="60%" handlePress={() => navigation.navigate('CreateHabit')}/>
       </View>
       <View style={{ flex: 0.15 }}>

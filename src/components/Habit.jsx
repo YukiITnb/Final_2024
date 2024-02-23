@@ -11,6 +11,7 @@ const Habit = ({ iconUrl, habit_name, frequency, color, navigation, habit_id }) 
   const [timeSpent, setTimeSpent] = useState(0);
   const refresh = useProgressStore((state) => state.refresh);
   const today = useProgressStore((state) => state.today);
+  // console.log('Today:', today);
 
   useEffect(() => {
     const fetchData = async () => {
