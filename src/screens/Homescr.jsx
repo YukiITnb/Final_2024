@@ -3,6 +3,7 @@ import React from 'react'
 import { useState, useEffect } from 'react';
 import { db } from '../db/firestore'
 import { collection, getDocs, addDoc } from 'firebase/firestore';
+import { getHabits } from '../db/services';
 import { useNavigation } from '@react-navigation/native';
 
 import Headerbar from '../components/Headerbar';
@@ -22,28 +23,6 @@ const Homescr = ({navigation}) => {
   const setIsAuthenticated = useProgressStore((state) => state.setIsAuthenticated);
   const uid = useProgressStore((state) => state.uid);
   console.log('uid:', uid);
-
-  async function getHabits() {
-    try {
-      const habitsCollection = collection(db, 'Habit');
-      const habitSnapshot = await getDocs(habitsCollection);
-      const habitList = habitSnapshot.docs.map(doc => {
-        const data = doc.data();
-        return {
-          habit_name: data.name,
-          description: data.description,
-          color: data.color,
-          hours: data.hours,
-          minutes: data.minutes,
-          habit_id: data.habit_id,
-        };
-      });
-      return habitList;
-    } catch (error) {
-      // Handle error
-      console.error('Error fetching habits:', error);
-    }
-  }
 
   useEffect(() => {
     getHabits().then(habitList => {

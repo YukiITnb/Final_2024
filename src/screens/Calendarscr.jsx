@@ -9,7 +9,6 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import moment from 'moment';
-import Swiper from 'react-native-swiper';
 
 const { width } = Dimensions.get('window');
 
@@ -76,7 +75,7 @@ export default function Calendarscr() {
           </View>
         </View>
 
-        <View style={{ flex: 1, paddingHorizontal: 16, paddingVertical: 24 }}>
+        <View style={{ flex: 0.7, paddingHorizontal: 16, paddingVertical: 24 }}>
           <Text style={styles.subtitle}>{value.toDateString()}</Text>
           <View style={styles.placeholder}>
             <View style={styles.placeholderInset}>
@@ -94,6 +93,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingVertical: 24,
+    backgroundColor: '#fff',
   },
   header: {
     paddingHorizontal: 16,
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   picker: {
-    flex: 1,
+    flex: 0.15,
     maxHeight: 74,
     paddingVertical: 12,
     flexDirection: 'row',

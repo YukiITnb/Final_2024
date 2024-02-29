@@ -1,44 +1,39 @@
-import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, View, TouchableOpacity, Image, SafeAreaView } from 'react-native'
+import React, { useState } from 'react';
 
 import Linechartcpn from '../components/Linechart' 
-import { icons } from '../constants'
+import DropdownComponent from '../components/Dropdown'
 
 import { Dimensions } from "react-native";
 const screenWidth = Dimensions.get("window").width;
 
 const Statisticscr = ({navigation}) => {
+  const [selectedValue, setSelectedValue] = useState(null);
+
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Thống kê</Text>
-      </View>
-      <View style={styles.container_1}>
-        <View style={styles.container_2}>
-          <View style={styles.row}>
-            <Text style={styles.text}>Mục tiêu</Text>
-            <Text style={styles.text}>Số lần nghỉ</Text>
-            <Text style={styles.text}>Tiến độ</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.text}>02:00:00</Text>
-            <Text style={styles.text}>3 lần</Text>
-            <Text style={styles.text}>70%</Text>
-          </View>
+    <SafeAreaView style={{ flex: 1 }}>
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.title}>Statistic</Text>
         </View>
-        <Linechartcpn />
-        <View style={styles.container_2}>
-          <View style={styles.row}>
-            <Text style={styles.text}>Thời gian trung bình</Text>
-            <Text style={styles.text}>Thời gian tối đa</Text>
+        <DropdownComponent onValueChange={setSelectedValue} />
+        <View style={styles.container_1}>
+          <View style={styles.container_2}>
+            <View style={styles.row}>
+              <Text style={styles.text}>Mục tiêu</Text>
+              <Text style={styles.text}>Số lần nghỉ</Text>
+              <Text style={styles.text}>Tiến độ</Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={styles.text}>02:00:00</Text>
+              <Text style={styles.text}>3 lần</Text>
+              <Text style={styles.text}>70%</Text>
+            </View>
           </View>
-          <View style={styles.row}>
-            <Text style={styles.text}>02:00:00</Text>
-            <Text style={styles.text}>02:00:00</Text>
-          </View>
+          <Linechartcpn selectedValue={selectedValue}/>
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   )
 }
 
@@ -49,13 +44,16 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     padding: 10,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
+    paddingVertical: 24,
   },
   header: {
-    marginBottom: 40,
+    paddingHorizontal: 16,
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: '700',
+    color: '#1d1d1d',
+    marginBottom: 12,
   },
   backbnt: {
     flexDirection: 'row',
@@ -75,15 +73,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderRadius: 10,
     marginBottom: 20,
-    // borderColor: '#177AD5',
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
-    elevation: 10,
+    borderColor: '#e3e3e3',
   },
   row: {
     flexDirection: 'row',
@@ -91,6 +81,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   text: {
-    fontSize: 18,
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#737373',
   },
 })

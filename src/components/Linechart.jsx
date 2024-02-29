@@ -6,21 +6,22 @@ import { Dimensions } from "react-native";
 const screenWidth = Dimensions.get("window").width;
 
 
-const Linechartcpn = () => {
+const Linechartcpn = ({selectedValue}) => {
+    console.log(selectedValue)
     const barData = [
-        { value: 1, label: 'T2' },
-        { value: 2, label: 'T3', frontColor: '#177AD5' },
-        { value: 1.3, label: 'T4', frontColor: '#177AD5' },
-        { value: 3, label: 'T5' },
-        { value: 0.5, label: 'T6', frontColor: '#177AD5' },
-        { value: 1, label: 'T7' },
-        { value: 0, label: 'CN' },
+        { value: 100, label: 'T2' },
+        { value: 50, label: 'T3', frontColor: '#177AD5' },
+        { value: 60, label: 'T4', frontColor: '#177AD5' },
+        { value: 20, label: 'T5' },
+        { value: 75, label: 'T6', frontColor: '#177AD5' },
+        { value: 40, label: 'T7', frontColor: '' },
+        { value: 90, label: 'CN' },
     ];
     return (
         <View style={styles.container}>
             <BarChart
                 barWidth={25}
-                maxValue={3}
+                maxValue={100}
                 barBorderRadius={4}
                 frontColor="lightgray"
                 data={barData}
@@ -44,18 +45,10 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         borderWidth: 2,
         borderRadius: 10,
-        borderColor: '#177AD5',
+        borderColor: '#e3e3e3',
         padding: 10,
         marginBottom: 20,
         width: screenWidth - 20,
         height: 300,
-        shadowColor: "#000",
-        shadowOffset: {
-          width: 0,
-          height: 2,
-        },
-        shadowOpacity: 0.2,
-        shadowRadius: 2,
-        elevation: 10,
     },
 })

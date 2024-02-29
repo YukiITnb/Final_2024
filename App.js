@@ -24,6 +24,7 @@ export default function App() {
         const today = new Date();
         const formattedDate = `${today.getDate()}_${today.getMonth() + 1}_${today.getFullYear()}`;
         setToday(formattedDate);
+        console.log('Today:', formattedDate);
         await new Promise(resolve => setTimeout(resolve, 2000));
       } catch (e) {
         console.warn(e);

@@ -10,8 +10,8 @@ const Habit = ({ iconUrl, habit_name, frequency, color, navigation, habit_id }) 
   const [progress, setProgress] = useState(0);
   const [timeSpent, setTimeSpent] = useState(0);
   const refresh = useProgressStore((state) => state.refresh);
-  const today = useProgressStore((state) => state.today);
-  // console.log('Today:', today);
+  const today = new Date();
+  const formattedDate = `${today.getDate()}_${today.getMonth() + 1}_${today.getFullYear()}`;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -24,7 +24,7 @@ const Habit = ({ iconUrl, habit_name, frequency, color, navigation, habit_id }) 
 
           const repeatQuery = query(
             collection(habitDoc.ref, 'repeat'),
-            where('day', '==', today)
+            where('day', '==', formattedDate)
           );
           const repeatDocs = await getDocs(repeatQuery);
 
@@ -49,15 +49,15 @@ const Habit = ({ iconUrl, habit_name, frequency, color, navigation, habit_id }) 
 
   return (
     <TouchableOpacity onPress={() => navigation.navigate('StudyDetail', { habit_id, habit_name })}>
-      <View style={[styles.container, { backgroundColor: color }]}>
+      <View style={[styles.container, { borderColor: color }]}>
         <Image source={iconUrl} style={styles.icon} />
         <View style={styles.textContainer}>
-          <Text>{habit_name}</Text>
-          <Text>{frequency}</Text>
+          <Text style={styles.text}>{habit_name}</Text>
+          <Text style={styles.text}>{frequency}</Text>
         </View>
         <View style={styles.rightContainer}>
-          <Text>{`${progress.toFixed(1)}%`}</Text>
-          <Text>{`${(timeSpent / 60).toFixed(1)} minutes`}</Text>
+          <Text style={styles.text}>{`${progress.toFixed(1)}%`}</Text>
+          <Text style={styles.text}>{`${(timeSpent / 60).toFixed(1)} minutes`}</Text>
         </View>
       </View>
     </TouchableOpacity>
@@ -73,8 +73,8 @@ const styles = StyleSheet.create({
     height: 60,
     justifyContent: 'flex-start',
     marginTop: 5,
-    borderWidth: 1, 
-    borderColor: '#312651',
+    backgroundColor: '#fff',
+    borderWidth: 2, 
     borderRadius: 10,
     padding: 10,
     width: '100%',
@@ -90,5 +90,10 @@ const styles = StyleSheet.create({
   rightContainer: {
     marginLeft: 'auto', 
     paddingLeft: 20,
+  },
+  text: {
+    fontSize: 15,
+    fontWeight: '500',
+    color: '#737373',
   },
 });
