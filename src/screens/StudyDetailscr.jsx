@@ -19,7 +19,8 @@ const StudyDetailscr = ({navigation, route}) => {
   const [time_total, setTimeTotal] = useState(0)
   const [remainingTimes, setRemainingTimes] = useState(0);
   const setRefresh = useProgressStore((state) => state.setRefresh);
-  const today = useProgressStore((state) => state.today);
+  const today = new Date();
+  const formattedDate = `${today.getDate()}_${today.getMonth() + 1}_${today.getFullYear()}`;
 
   const [repeatDoc, setRepeatDoc] = useState(null);
 
@@ -35,7 +36,7 @@ const StudyDetailscr = ({navigation, route}) => {
 
           const repeatQuery = query(
             collection(habitDoc.ref, 'repeat'),
-            where('day', '==', today)
+            where('day', '==', formattedDate)
           );
           const repeatDocs = await getDocs(repeatQuery);
 

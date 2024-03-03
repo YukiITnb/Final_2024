@@ -1,14 +1,28 @@
 import { StyleSheet, Text, View, TouchableOpacity, Image, SafeAreaView } from 'react-native'
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 
 import Linechartcpn from '../components/Linechart' 
 import DropdownComponent from '../components/Dropdown'
 
 import { Dimensions } from "react-native";
+import moment from 'moment';
 const screenWidth = Dimensions.get("window").width;
 
 const Statisticscr = ({navigation}) => {
   const [selectedValue, setSelectedValue] = useState(null);
+
+  const week = useMemo(() => {
+    const start = moment().startOf('week').add(1, 'day');
+  
+    return Array.from({ length: 7 }).map((_, index) => {
+      const date = moment(start).add(index, 'day');
+  
+      return {
+        weekday: date.format('ddd'),
+        date: date.format('D_M_YYYY'),
+      };
+    });
+  }, []);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -30,7 +44,7 @@ const Statisticscr = ({navigation}) => {
               <Text style={styles.text}>70%</Text>
             </View>
           </View>
-          <Linechartcpn selectedValue={selectedValue}/>
+          <Linechartcpn selectedValue={selectedValue} week={week}/>
         </View>
       </View>
     </SafeAreaView>
