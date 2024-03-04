@@ -7,19 +7,20 @@ import { fetchTodayRepeats } from '../db/services';
 const DailyFB = () => {
   const [inputText, setInputText] = useState('');
   const [feedback, setFeedback] = useState('');
+  const API_KEY = 'AIzaSyC2xzR5vDVn4a7cjtqDq_uQciPvZ3E9Ls8';
 
   const handleSendRequest = async () => {
     try {
-      const response = await axios.post('https://api.openai.com/v1/engines/text-davinci-002/completions', {
-        prompt: inputText + "\n\nFeedback và lời khuyên của GPT: ",
-        max_tokens: 100
-      }, {
-        headers: {
-          'Authorization': 'Bearer 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',
-          'Content-Type': 'application/json'
-        }
+      const response = await axios.post(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.0-pro:generateContent?key=${API_KEY}`, 
+      {
+        contents: [{
+          parts:[{
+            text: "Write a story about a magic backpack."
+            }]
+          }],
       });
-      setFeedback(response.data.choices[0].text);
+      // setFeedback(response.data.choices[0].text);
+      console.log(response.data?.candidates?.[0]?.content?.parts?.[0]?.text);
     } catch (error) {
         if (error.response) {
             console.error(error.response.data);
