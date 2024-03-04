@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import moment from 'moment';
+import DailyFB from '../components/DailyFB';
 
 const { width } = Dimensions.get('window');
 
@@ -80,6 +81,7 @@ export default function Calendarscr() {
           <View style={styles.placeholder}>
             <View style={styles.placeholderInset}>
               {/* Replace with your content */}
+              <DailyFB />
             </View>
           </View>
         </View>

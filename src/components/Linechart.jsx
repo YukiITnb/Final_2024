@@ -19,14 +19,12 @@ const Linechartcpn = ({selectedValue, week}) => {
         }
         const fetchWeekData = async () => {
           const dates = week.map(item => item.date);
-        // const dates = ["26_2_2024", "27_2_2024", "28_2_2024", "29_2_2024"];
-        //   console.log(dates);
           const data = await fetchData({ habit_id: selectedValue, dates });
           console.log(data);
-          const newBarData = data.map(({ date, progress }) => {
-            const item = week.find(item => item.date === date);
+          const newBarData = week.map(item => {
+            const dataItem = data.find(({ date }) => date === item.date);
             return {
-              value: progress,
+              value: dataItem ? dataItem.progress : 0,
               label: item.weekday,
               frontColor: '#177AD5',
             };
@@ -37,16 +35,6 @@ const Linechartcpn = ({selectedValue, week}) => {
       
         fetchWeekData();
       }, [selectedValue, week]);
-
-    // const barData = [
-    //     { value: 100, label: 'T2' },
-    //     { value: 50, label: 'T3', frontColor: '#177AD5' },
-    //     { value: 60, label: 'T4', frontColor: '#177AD5' },
-    //     { value: 20, label: 'T5' },
-    //     { value: 75, label: 'T6', frontColor: '#177AD5' },
-    //     { value: 40, label: 'T7', frontColor: '' },
-    //     { value: 90, label: 'Sun' },
-    // ];
     return (
         <View style={styles.container}>
             <BarChart

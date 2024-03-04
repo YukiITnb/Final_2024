@@ -78,4 +78,38 @@ async function getHabitsname() {
     }
   };
 
-export { getHabits, getHabitsname, fetchData};
+  const fetchTodayRepeats = async () => {
+    try {
+      // Get today's date
+      const today = format(new Date(), 'd_M_yyyy');
+  
+      // Query for all documents in the 'Habit' collection
+      const habitDocs = await getDocs(collection(db, 'Habit'));
+  
+      // Initialize an array to store all repeats
+      let allRepeats = [];
+  
+      // Loop over each habit document
+      for (const habitDoc of habitDocs.docs) {
+        // Query for 'repeat' documents with 'day' equal to today
+        const repeatQuery = query(
+          collection(habitDoc.ref, 'repeat'),
+          where('day', '==', today)
+        );
+        const repeatDocs = await getDocs(repeatQuery);
+  
+        // Map over the documents and add them to the allRepeats array
+        const repeats = repeatDocs.docs.map(doc => ({
+          habit_name: habitDoc.data().name,
+          progress: doc.data().progress,
+        }));
+        allRepeats = [...allRepeats, ...repeats];
+      }
+  
+      return allRepeats;
+    } catch (error) {
+      console.error('Error getting documents:', error);
+    }
+  };
+
+export { getHabits, getHabitsname, fetchData, fetchTodayRepeats };
