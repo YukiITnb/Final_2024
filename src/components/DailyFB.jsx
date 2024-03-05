@@ -15,17 +15,17 @@ const DailyFB = () => {
       {
         contents: [{
           parts:[{
-            text: "Write a story about a magic backpack."
+            text: inputText + "Đưa ra cho tôi một số phản hồi về việc hoàn thành các Habit trong ngày hôm qua. Và những điều cần cải thiện. Đưa ra câu trả lời không quá dài, khoảng 4-5 câu."
             }]
           }],
       });
-      // setFeedback(response.data.choices[0].text);
-      console.log(response.data?.candidates?.[0]?.content?.parts?.[0]?.text);
+      setFeedback(response.data?.candidates?.[0]?.content?.parts?.[0]?.text);
+      // console.log(response.data?.candidates?.[0]?.content?.parts?.[0]?.text);
     } catch (error) {
         if (error.response) {
             console.error(error.response.data);
         } else {
-            console.error(error.message); // Xem xét hiển thị thông báo lỗi chung
+            console.error(error.message);
         }
   }
   };
