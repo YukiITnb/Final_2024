@@ -17,7 +17,7 @@ const CreateGroup = ({ navigation }) => {
       </View>
       <View>
         <View style={styles.inputContainer}>
-          <Text style={styles.label}>Tên</Text>
+          <Text style={styles.label}>Tên Group</Text>
           <TextInput
             style={styles.input}
             placeholder="Tên nhóm có thể gồm ký tự chữ và số"

@@ -1,116 +1,243 @@
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native'
-import { Alert } from 'react-native';
-import React from 'react'
-import { useEffect, useState } from 'react';
-import { auth } from '../db/firestore';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { COLORS } from '../constants'
-import { userSignUp } from '../db/firestore'
+import React, { useState } from "react";
+import {
+  StyleSheet,
+  SafeAreaView,
+  View,
+  Image,
+  Text,
+  TouchableOpacity,
+  TextInput,
+} from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { userSignUp } from "../db/firestore";
+import { auth } from "../db/firestore";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { Alert } from "react-native";
 
-const Signupscr = ({ navigation }) => {
-
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [repassword, setRepassword] = useState("");
-
+export default function Example() {
+  const [form, setForm] = useState({
+    email: "",
+    password: "",
+    repassword: "",
+    username: "",
+  });
   const handleSignup = async () => {
-    if (password !== repassword) {
-      Alert.alert('Error', 'Passwords do not match!');
+    if (form.password !== form.repassword) {
+      Alert.alert("Error", "Passwords do not match!");
       return;
     }
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        form.email,
+        form.password
+      );
       const { user } = userCredential;
       const userData = {
-        avatar: 'avatar.png',
-        email: email,
-        password: password,
-        userName: username,
+        avatar: "avatar.png",
+        email: form.email,
+        password: form.password,
+        userName: form.username,
         uid: user.uid,
         level: 0,
         points: 0,
         groups: [],
       };
       await userSignUp(userData);
-      Alert.alert('Success', 'User created successfully!');
-      navigation.navigate('Login')
+      Alert.alert("Success", "User created successfully!");
+      navigation.navigate("Login");
     } catch (error) {
       console.error(error);
     }
   };
   return (
-    <View style={styles.container}>
-      <View style={styles.inputContainer}>
-        <TextInput
-          value={username}
-          onChangeText={setUsername}
-          placeholder="Username"
-          autoCapitalize="none"
-          style={styles.input}
-        />
-      </View>
-      <View style={styles.inputContainer}>
-        <TextInput
-          value={email}
-          onChangeText={setEmail}
-          placeholder="Email"
-          autoCapitalize="none"
-          style={styles.input}
-        />
-      </View>
-      <View style={styles.inputContainer}>
-      <TextInput
-        value={password}
-        onChangeText={setPassword}
-        placeholder="Password"
-        secureTextEntry
-        style={styles.input}
-      />
-      </View>
-      <View style={styles.inputContainer}>
-      <TextInput
-        value={repassword}
-        onChangeText={setRepassword}
-        placeholder="ReEnter Password"
-        secureTextEntry
-        style={styles.input}
-      />
-      </View>
-      <TouchableOpacity style={styles.switch} onPress={handleSignup}>
-        <Text style={styles.switchText}>Signup</Text>
-      </TouchableOpacity>
-    </View>
-  )
-}
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#e8ecf4" }}>
+      <View style={styles.container}>
+        <KeyboardAwareScrollView>
+          <View style={styles.header}>
+            <Image
+              alt="App Logo"
+              resizeMode="contain"
+              style={styles.headerImg}
+              source={{
+                uri: "https://assets.withfra.me/SignIn.2.png",
+              }}
+            />
 
-export default Signupscr
+            <Text style={styles.title}>
+              Sign up to <Text style={{ color: "#075eec" }}>MyApp</Text>
+            </Text>
+
+            <Text style={styles.subtitle}>
+              Get access to your portfolio and more
+            </Text>
+          </View>
+
+          <View style={styles.form}>
+            <View style={styles.input}>
+              <Text style={styles.inputLabel}>User Name</Text>
+
+              <TextInput
+                autoCapitalize="none"
+                autoCorrect={false}
+                keyboardType="default"
+                onChangeText={(username) => setForm({ ...form, username })}
+                placeholder="Not included special characters"
+                placeholderTextColor="#6b7280"
+                style={styles.inputControl}
+                value={form.username}
+              />
+            </View>
+            <View style={styles.input}>
+              <Text style={styles.inputLabel}>Email address</Text>
+
+              <TextInput
+                autoCapitalize="none"
+                autoCorrect={false}
+                keyboardType="email-address"
+                onChangeText={(email) => setForm({ ...form, email })}
+                placeholder="john@example.com"
+                placeholderTextColor="#6b7280"
+                style={styles.inputControl}
+                value={form.email}
+              />
+            </View>
+
+            <View style={styles.input}>
+              <Text style={styles.inputLabel}>Password</Text>
+
+              <TextInput
+                autoCorrect={false}
+                onChangeText={(password) => setForm({ ...form, password })}
+                placeholder="********"
+                placeholderTextColor="#6b7280"
+                style={styles.inputControl}
+                secureTextEntry={true}
+                value={form.password}
+              />
+            </View>
+            <View style={styles.input}>
+              <Text style={styles.inputLabel}>RePassword</Text>
+
+              <TextInput
+                autoCorrect={false}
+                onChangeText={(repassword) => setForm({ ...form, repassword })}
+                placeholder="********"
+                placeholderTextColor="#6b7280"
+                style={styles.inputControl}
+                secureTextEntry={true}
+                value={form.repassword}
+              />
+            </View>
+
+            <View style={styles.formAction}>
+              <TouchableOpacity onPress={handleSignup}>
+                <View style={styles.btn}>
+                  <Text style={styles.btnText}>Sign up</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </KeyboardAwareScrollView>
+      </View>
+    </SafeAreaView>
+  );
+}
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: COLORS.lightWhite,
-    padding: 10,
-    justifyContent: 'center',
-    // alignItems: 'center',
+    paddingVertical: 24,
+    paddingHorizontal: 0,
+    flexGrow: 1,
+    flexShrink: 1,
+    flexBasis: 0,
   },
-  inputContainer: {
-    marginBottom: 10,
+  title: {
+    fontSize: 31,
+    fontWeight: "700",
+    color: "#1D2A32",
+    marginBottom: 6,
   },
+  subtitle: {
+    fontSize: 15,
+    fontWeight: "500",
+    color: "#929292",
+  },
+  /** Header */
+  header: {
+    alignItems: "center",
+    justifyContent: "center",
+    marginVertical: 36,
+  },
+  headerImg: {
+    width: 80,
+    height: 80,
+    alignSelf: "center",
+    marginBottom: 36,
+  },
+  /** Form */
+  form: {
+    marginBottom: 24,
+    paddingHorizontal: 24,
+    flexGrow: 1,
+    flexShrink: 1,
+    flexBasis: 0,
+  },
+  formAction: {
+    marginTop: 4,
+    marginBottom: 16,
+  },
+  formLink: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#075eec",
+    textAlign: "center",
+  },
+  formFooter: {
+    fontSize: 15,
+    fontWeight: "600",
+    color: "#222",
+    textAlign: "center",
+    letterSpacing: 0.15,
+  },
+  /** Input */
   input: {
+    marginBottom: 16,
+  },
+  inputLabel: {
+    fontSize: 17,
+    fontWeight: "600",
+    color: "#222",
+    marginBottom: 8,
+  },
+  inputControl: {
+    height: 50,
+    backgroundColor: "#fff",
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    fontSize: 15,
+    fontWeight: "500",
+    color: "#222",
     borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 10,
-    fontSize: 16,
+    borderColor: "#C9D3DB",
+    borderStyle: "solid",
   },
-  switch: {
-    backgroundColor: '#ccc',
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 10,
+  /** Button */
+  btn: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 30,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderWidth: 1,
+    backgroundColor: "#075eec",
+    borderColor: "#075eec",
   },
-  switchText: {
-    fontSize: 16,
-    textAlign: 'center',
+  btnText: {
+    fontSize: 18,
+    lineHeight: 26,
+    fontWeight: "600",
+    color: "#fff",
   },
-})
+});
