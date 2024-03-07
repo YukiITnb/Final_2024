@@ -1,17 +1,15 @@
 import { db } from "./firestore";
 import { collection, getDocs, addDoc, where, query } from 'firebase/firestore';
-import { startOfWeek, endOfWeek, format } from 'date-fns';
-
-
-// const today = new Date();
-// const formattedDate = `${today.getDate()}_${today.getMonth() + 1}_${today.getFullYear()}`;
+import { getDay, format } from 'date-fns';
 
 async function getHabits() {
-    try {
-      const habitsCollection = collection(db, 'Habit');
-      const habitSnapshot = await getDocs(habitsCollection);
-      const habitList = habitSnapshot.docs.map(doc => {
-        const data = doc.data();
+  try {
+    const today = getDay(new Date()) + 1;
+    const habitsCollection = collection(db, 'Habit');
+    const habitSnapshot = await getDocs(habitsCollection);
+    const habitList = habitSnapshot.docs.map(doc => {
+      const data = doc.data();
+      if (data.weekday.includes(today)) {
         return {
           habit_name: data.name,
           description: data.description,
@@ -20,13 +18,14 @@ async function getHabits() {
           minutes: data.minutes,
           habit_id: data.habit_id,
         };
-      });
-      return habitList;
-    } catch (error) {
-      // Handle error
-      console.error('Error fetching habits:', error);
-    }
+      }
+    }).filter(Boolean);
+    return habitList;
+  } catch (error) {
+    // Handle error
+    console.error('Error fetching habits:', error);
   }
+}
 
 async function getHabitsname() {
     try {
@@ -80,25 +79,16 @@ async function getHabitsname() {
 
   const fetchTodayRepeats = async () => {
     try {
-      // Get today's date
       const today = format(new Date(), 'd_M_yyyy');
+        const habitDocs = await getDocs(collection(db, 'Habit'));
+        let allRepeats = [];
   
-      // Query for all documents in the 'Habit' collection
-      const habitDocs = await getDocs(collection(db, 'Habit'));
-  
-      // Initialize an array to store all repeats
-      let allRepeats = [];
-  
-      // Loop over each habit document
       for (const habitDoc of habitDocs.docs) {
-        // Query for 'repeat' documents with 'day' equal to today
         const repeatQuery = query(
           collection(habitDoc.ref, 'repeat'),
           where('day', '==', today)
         );
         const repeatDocs = await getDocs(repeatQuery);
-  
-        // Map over the documents and add them to the allRepeats array
         const repeats = repeatDocs.docs.map(doc => ({
           habit_name: habitDoc.data().name,
           progress: doc.data().progress,
@@ -112,4 +102,34 @@ async function getHabitsname() {
     }
   };
 
-export { getHabits, getHabitsname, fetchData, fetchTodayRepeats };
+  async function userSignUp(userData) {
+    try {
+      await addDoc(collection(db, 'Users'), userData);
+      console.log('User added successfully');
+    } catch (error) {
+      console.error('Error adding user:', error);
+    }
+  }
+
+  async function getGroups() {
+    try {
+      const groupsCollection = collection(db, 'Group');
+      const groupSnapshot = await getDocs(groupsCollection);
+      const groupList = groupSnapshot.docs.map(doc => {
+        const data = doc.data();
+          return {
+            gname: data.gname,
+            curMemNum: data.curMemNum,
+            maxMemNum: data.maxMemNum,
+            description: data.description,
+            gid: data.gid,
+          };
+      }).filter(Boolean);
+      return groupList;
+    } catch (error) {
+      // Handle error
+      console.error('Error fetching groupList:', error);
+    }
+  }
+
+export { getHabits, getHabitsname, fetchData, fetchTodayRepeats, userSignUp, getGroups };

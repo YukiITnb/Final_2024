@@ -35,7 +35,7 @@ function TopTabsGroup() {
           tabBarLabel: "Group",
         }}
       />
-      <TopTabs.Screen name="Following" component={PickGroup} />
+      <TopTabs.Screen name="My Group" component={PickGroup} />
     </TopTabs.Navigator>
   );
 }

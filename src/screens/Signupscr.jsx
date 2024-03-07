@@ -4,10 +4,12 @@ import React from 'react'
 import { useEffect, useState } from 'react';
 import { auth } from '../db/firestore';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import {COLORS} from '../constants'
+import { COLORS } from '../constants'
+import { userSignUp } from '../db/firestore'
 
 const Signupscr = ({ navigation }) => {
 
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [repassword, setRepassword] = useState("");
@@ -19,6 +21,18 @@ const Signupscr = ({ navigation }) => {
     }
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const { user } = userCredential;
+      const userData = {
+        avatar: 'avatar.png',
+        email: email,
+        password: password,
+        userName: username,
+        uid: user.uid,
+        level: 0,
+        points: 0,
+        groups: [],
+      };
+      await userSignUp(userData);
       Alert.alert('Success', 'User created successfully!');
       navigation.navigate('Login')
     } catch (error) {
@@ -27,6 +41,15 @@ const Signupscr = ({ navigation }) => {
   };
   return (
     <View style={styles.container}>
+      <View style={styles.inputContainer}>
+        <TextInput
+          value={username}
+          onChangeText={setUsername}
+          placeholder="Username"
+          autoCapitalize="none"
+          style={styles.input}
+        />
+      </View>
       <View style={styles.inputContainer}>
         <TextInput
           value={email}

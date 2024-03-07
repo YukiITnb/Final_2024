@@ -1,31 +1,36 @@
-import { StyleSheet, Text, View, StatusBar, Button, ScrollView } from 'react-native'
-import React from 'react'
-import { useState, useEffect } from 'react';
-import { db } from '../db/firestore'
-import { collection, getDocs, addDoc } from 'firebase/firestore';
-import { getHabits } from '../db/services';
-import { useNavigation } from '@react-navigation/native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  StatusBar,
+  Button,
+  ScrollView,
+} from "react-native";
+import React from "react";
+import { useState, useEffect } from "react";
+import { getHabits } from "../db/services";
 
-import Headerbar from '../components/Headerbar';
-import ProgressComponent from '../components/ProgressBar';
-import Habit from '../components/Habit';
+import Headerbar from "../components/Headerbar";
+import ProgressComponent from "../components/ProgressBar";
+import Habit from "../components/Habit";
 
-import { icons, COLORS, SIZES, images } from '../constants'
-import { useProgressStore } from '../store/progressStore';
+import { icons, COLORS, SIZES, images } from "../constants";
+import { useProgressStore } from "../store/progressStore";
 
-
-const Homescr = ({navigation}) => {
+const Homescr = ({ navigation }) => {
   const [habits, setHabits] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const refresh = useProgressStore((state) => state.refresh);
   const setRefresh = useProgressStore((state) => state.setRefresh);
 
-  const setIsAuthenticated = useProgressStore((state) => state.setIsAuthenticated);
+  const setIsAuthenticated = useProgressStore(
+    (state) => state.setIsAuthenticated
+  );
   const uid = useProgressStore((state) => state.uid);
-  console.log('uid:', uid);
+  console.log("uid:", uid);
 
   useEffect(() => {
-    getHabits().then(habitList => {
+    getHabits().then((habitList) => {
       setHabits(habitList);
       setIsLoading(false);
     });
@@ -36,23 +41,36 @@ const Homescr = ({navigation}) => {
   const increaseProgress = useProgressStore((state) => state.increaseProgress);
   const resetProgress = useProgressStore((state) => state.resetProgress);
 
-
   return (
     <View style={styles.container}>
       <StatusBar />
       <View style={styles.headbar}>
-        <Headerbar iconUrl={images.profile} dimension="100%" handlePress={() => {}}/>
+        <Headerbar
+          iconUrl={images.profile}
+          dimension="100%"
+          handlePress={() => {}}
+        />
         <View style={{ flex: 1 }}>
-        <Text style={styles.headertext}>Yuki</Text>
-        <Text style={styles.headertext}>Lv 12</Text>
+          <Text style={styles.headertext}>Yuki</Text>
+          <Text style={styles.headertext}>Lv 12</Text>
         </View>
-        <Headerbar iconUrl={icons.heartOutline} dimension="60%" handlePress={() => setIsAuthenticated(false)}/>
-        <Headerbar iconUrl={icons.plus} dimension="60%" handlePress={() => navigation.navigate('CreateHabit')}/>
+        <Headerbar
+          iconUrl={icons.heartOutline}
+          dimension="60%"
+          handlePress={() => setIsAuthenticated(false)}
+        />
+        <Headerbar
+          iconUrl={icons.plus}
+          dimension="60%"
+          handlePress={() => navigation.navigate("CreateHabit")}
+        />
       </View>
       <View style={{ flex: 0.15 }}>
         <View style={styles.containertext}>
           <Text style={styles.userName}>Hello Yuki</Text>
-          <Text style={styles.welcomeMessage}>See your Progress today here</Text>
+          <Text style={styles.welcomeMessage}>
+            See your Progress today here
+          </Text>
         </View>
       </View>
       <ProgressComponent />
@@ -61,25 +79,25 @@ const Homescr = ({navigation}) => {
       <View style={{ flex: 0.7 }}>
         <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
           {isLoading && <Text>Loading...</Text>}
-          {!isLoading && habits.map((habit, index) => (
-            <Habit
-              key={index}
-              iconUrl={icons.heartOutline}
-              habit_name={habit.habit_name}
-              frequency={habit.description}
-              color={habit.color}
-              navigation={navigation}
-              habit_id={habit.habit_id}
-            />
-          ))}
+          {!isLoading &&
+            habits.map((habit, index) => (
+              <Habit
+                key={index}
+                iconUrl={icons.heartOutline}
+                habit_name={habit.habit_name}
+                frequency={habit.description}
+                color={habit.color}
+                navigation={navigation}
+                habit_id={habit.habit_id}
+              />
+            ))}
         </ScrollView>
       </View>
-      
     </View>
-  )
-}
+  );
+};
 
-export default Homescr
+export default Homescr;
 
 const styles = StyleSheet.create({
   container: {
@@ -88,17 +106,17 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   headbar: {
-    flexDirection: 'row', 
-    top: 10, 
-    backgroundColor: COLORS.lightWhite, 
-    paddingLeft: SIZES.small, 
-    paddingRight: SIZES.small
+    flexDirection: "row",
+    top: 10,
+    backgroundColor: COLORS.lightWhite,
+    paddingLeft: SIZES.small,
+    paddingRight: SIZES.small,
   },
   headertext: {
-    flex: 1, 
-    fontSize: SIZES.h1, 
-    fontWeight: 'bold',
-    marginLeft:10
+    flex: 1,
+    fontSize: SIZES.h1,
+    fontWeight: "bold",
+    marginLeft: 10,
   },
   userName: {
     fontSize: SIZES.large,
@@ -112,6 +130,6 @@ const styles = StyleSheet.create({
   containertext: {
     width: "100%",
     top: 20,
-    left: 10
-  }
-})
+    left: 10,
+  },
+});
