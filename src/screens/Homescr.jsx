@@ -13,6 +13,7 @@ import { getHabits } from "../db/services";
 import Headerbar from "../components/Headerbar";
 import ProgressComponent from "../components/ProgressBar";
 import Habit from "../components/Habit";
+import LoadingSpiner from "../components/LoadingSpiner";
 
 import { icons, COLORS, SIZES, images } from "../constants";
 import { useProgressStore } from "../store/progressStore";
@@ -78,7 +79,7 @@ const Homescr = ({ navigation }) => {
       <Button title="Reset Progress" onPress={resetProgress} />
       <View style={{ flex: 0.7 }}>
         <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
-          {isLoading && <Text>Loading...</Text>}
+          {isLoading && <LoadingSpiner />}
           {!isLoading &&
             habits.map((habit, index) => (
               <Habit

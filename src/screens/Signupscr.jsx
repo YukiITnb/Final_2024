@@ -9,12 +9,12 @@ import {
   TextInput,
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { userSignUp } from "../db/firestore";
+import { userSignUp } from "../db/services";
 import { auth } from "../db/firestore";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { Alert } from "react-native";
 
-export default function Example() {
+export default function Signupscr({ navigation }) {
   const [form, setForm] = useState({
     email: "",
     password: "",
