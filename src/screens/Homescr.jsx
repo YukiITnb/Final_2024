@@ -14,6 +14,7 @@ import Headerbar from "../components/Headerbar";
 import ProgressComponent from "../components/ProgressBar";
 import Habit from "../components/Habit";
 import LoadingSpiner from "../components/LoadingSpiner";
+import HabitTypeModal from "../components/HabitTypeModal";
 
 import { icons, COLORS, SIZES, images } from "../constants";
 import { useProgressStore } from "../store/progressStore";
@@ -23,6 +24,15 @@ const Homescr = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(true);
   const refresh = useProgressStore((state) => state.refresh);
   const setRefresh = useProgressStore((state) => state.setRefresh);
+  const [isModalVisible, setModalVisible] = useState(false);
+
+  const handleOpenModal = () => {
+    setModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalVisible(false);
+  };
 
   const setIsAuthenticated = useProgressStore(
     (state) => state.setIsAuthenticated
@@ -63,7 +73,7 @@ const Homescr = ({ navigation }) => {
         <Headerbar
           iconUrl={icons.plus}
           dimension="60%"
-          handlePress={() => navigation.navigate("CreateHabit")}
+          handlePress={handleOpenModal}
         />
       </View>
       <View style={{ flex: 0.15 }}>
@@ -94,6 +104,11 @@ const Homescr = ({ navigation }) => {
             ))}
         </ScrollView>
       </View>
+      <HabitTypeModal
+        navigation={navigation}
+        visible={isModalVisible}
+        onRequestClose={handleCloseModal}
+      />
     </View>
   );
 };
