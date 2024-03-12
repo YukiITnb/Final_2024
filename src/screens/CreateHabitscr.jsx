@@ -7,11 +7,9 @@ import {
   FlatList,
   Image,
   ScrollView,
-  StatusBar,
   SafeAreaView,
 } from "react-native";
 import React, { useState } from "react";
-// import TimePicker from 'react-native-picker-select';
 
 import { icons } from "../constants";
 import Colorpicker from "../components/Colorpicker";
@@ -52,15 +50,15 @@ const Weekday = [
 ];
 
 const CreateHabit = ({ navigation, route }) => {
-  const habitType = route.params;
-  console.log("habitType:", habitType);
+  const { habitType } = route.params;
   const [selectedDays, setSelectedDays] = useState([]);
   const [hours_input, setHours] = useState("0");
   const [minutes_input, setMinutes] = useState("0");
   const color = useProgressStore((state) => state.color);
-  const refresh = useProgressStore((state) => state.refresh);
+
   const setRefresh = useProgressStore((state) => state.setRefresh);
-  const today = useProgressStore((state) => state.today);
+  const day = new Date();
+  const today = `${day.getDate()}_${day.getMonth() + 1}_${day.getFullYear()}`;
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -88,6 +86,7 @@ const CreateHabit = ({ navigation, route }) => {
         weekday: selectedDays,
         hours: hours_input,
         minutes: minutes_input,
+        type: habitType,
       };
 
       const docRef = await addDoc(habitsCollection, habit);
@@ -107,7 +106,6 @@ const CreateHabit = ({ navigation, route }) => {
 
       setRefresh(true);
 
-      // Navigate to the Home screen after the document is added
       navigation.navigate("Home");
     } catch (e) {
       console.error("Error adding document: ", e);
