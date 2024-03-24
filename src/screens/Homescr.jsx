@@ -37,8 +37,6 @@ const Homescr = ({ navigation }) => {
   const setIsAuthenticated = useProgressStore(
     (state) => state.setIsAuthenticated
   );
-  const uid = useProgressStore((state) => state.uid);
-  console.log("uid:", uid);
 
   useEffect(() => {
     getHabits().then((habitList) => {
@@ -94,12 +92,12 @@ const Homescr = ({ navigation }) => {
             habits.map((habit, index) => (
               <Habit
                 key={index}
-                iconUrl={icons.heartOutline}
                 habit_name={habit.habit_name}
-                frequency={habit.description}
+                description={habit.description}
                 color={habit.color}
                 navigation={navigation}
                 habit_id={habit.habit_id}
+                type={habit.type}
               />
             ))}
         </ScrollView>

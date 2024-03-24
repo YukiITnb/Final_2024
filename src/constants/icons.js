@@ -12,6 +12,9 @@ import chevronRight from '../../assets/icons/chevron-right.png'
 import checkmark from '../../assets/icons/checkmark.png'
 import plus from '../../assets/icons/plus.png'
 import arrow from '../../assets/icons/arrow.png'
+import YN from '../../assets/icons/YN.png'
+import TC from '../../assets/icons/TC.png'
+import MS from '../../assets/icons/MS.png'
 
 export default {
   heart,
@@ -28,4 +31,7 @@ export default {
   checkmark,
   plus,
   arrow,
+  YN,
+  TC,
+  MS,
 };

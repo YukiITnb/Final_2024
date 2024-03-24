@@ -17,6 +17,7 @@ async function getHabits() {
           hours: data.hours,
           minutes: data.minutes,
           habit_id: data.habit_id,
+          type: data.type,
         };
       }
     }).filter(Boolean);

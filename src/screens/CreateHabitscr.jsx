@@ -17,6 +17,7 @@ import { useProgressStore } from "../store/progressStore";
 
 import { db } from "../db/firestore";
 import { collection, getDocs, addDoc } from "firebase/firestore";
+import { set } from "date-fns";
 
 const Weekday = [
   {
@@ -56,12 +57,16 @@ const CreateHabit = ({ navigation, route }) => {
   const [minutes_input, setMinutes] = useState("0");
   const color = useProgressStore((state) => state.color);
 
+  const [target, setTarget] = useState("");
+  const [unit, setUnit] = useState("");
+
   const setRefresh = useProgressStore((state) => state.setRefresh);
   const day = new Date();
   const today = `${day.getDate()}_${day.getMonth() + 1}_${day.getFullYear()}`;
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const uid = useProgressStore((state) => state.uid);
 
   const handleDayPress = (id) => {
     if (selectedDays.includes(id)) {
@@ -74,34 +79,60 @@ const CreateHabit = ({ navigation, route }) => {
   const handleSave = async () => {
     try {
       const habitsCollection = collection(db, "Habit");
-      const querySnapshot = await getDocs(habitsCollection);
-      const currentCount = querySnapshot.size;
-      const nextId = currentCount + 1;
 
-      const habit = {
-        habit_id: nextId,
+      let habit = {
+        habit_id: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),
+        uid: uid,
         name: name,
         description: description,
         color: color,
         weekday: selectedDays,
-        hours: hours_input,
-        minutes: minutes_input,
         type: habitType,
       };
+
+      if (habitType === 'CountingTime') {
+        habit = {
+          ...habit,
+          hours: hours_input,
+          minutes: minutes_input,
+        };
+      } else if (habitType === 'Measure') {
+        habit = {
+          ...habit,
+          target: target,
+          unit: unit,
+        };
+      }
 
       const docRef = await addDoc(habitsCollection, habit);
       console.log("Document written with ID: ", docRef.id);
 
       const repeatCollection = collection(docRef, "repeat");
-      const repeatData = {
-        break_time: 0,
-        complete: false,
+      let repeatData = {
         day: today,
-        progress: 0,
-        time: (parseInt(habit.hours) * 60 + parseInt(habit.minutes)) * 60,
-        time_remain:
-          (parseInt(habit.hours) * 60 + parseInt(habit.minutes)) * 60,
       };
+      if (habitType === 'CountingTime') {
+        repeatData = {
+          ...repeatData,
+          break_time: 0,
+          complete: false,
+          progress: 0,
+          time: (parseInt(hours_input) * 60 + parseInt(minutes_input)) * 60,
+          time_remain: (parseInt(hours_input) * 60 + parseInt(minutes_input)) * 60,
+        };
+      } else if (habitType === 'Measure') {
+        repeatData = {
+          ...repeatData,
+          progress: 0,
+          target: target,
+          unit: unit,
+        };
+      } else if (habitType === 'YN') {
+        repeatData = {
+          ...repeatData,
+          isCompleted: false,
+        };
+      }
       await addDoc(repeatCollection, repeatData);
 
       setRefresh(true);
@@ -160,7 +191,28 @@ const CreateHabit = ({ navigation, route }) => {
               onChangeText={setDescription}
             />
           </View>
-
+          {habitType === 'Measure' && (
+            <>
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Mục tiêu</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="v.d. 10"
+              value={target}
+              onChangeText={setTarget}
+            />
+          </View>
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Đơn vị</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="v.d. km, trang, lần"
+              value={unit}
+              onChangeText={setUnit}
+            />
+          </View>
+          </>
+          )}
           <View style={styles.inputContainer}>
             <Text style={styles.label}>Màu sắc</Text>
             <Colorpicker />
@@ -194,26 +246,29 @@ const CreateHabit = ({ navigation, route }) => {
               horizontal
             />
           </View>
-          <Text style={styles.label}>Thời gian thực hiện hàng ngày</Text>
-          <View style={styles.Timeinputcontainer}>
-            <TextInput
-              maxLength={2}
-              keyboardType="numeric"
-              name="hours"
-              onChangeText={handleHoursChange}
-              defaultValue="00"
-              style={styles.Timeinput}
-            />
-            <TextInput
-              maxLength={2}
-              keyboardType="numeric"
-              name="minutes"
-              onChangeText={handleMinutesChange}
-              defaultValue="00"
-              style={styles.Timeinput}
-            />
-          </View>
-
+          {habitType === 'CountingTime' && (
+            <>
+              <Text style={styles.label}>Thời gian thực hiện hàng ngày</Text>
+              <View style={styles.Timeinputcontainer}>
+                <TextInput
+                  maxLength={2}
+                  keyboardType="numeric"
+                  name="hours"
+                  onChangeText={handleHoursChange}
+                  defaultValue="00"
+                  style={styles.Timeinput}
+                />
+                <TextInput
+                  maxLength={2}
+                  keyboardType="numeric"
+                  name="minutes"
+                  onChangeText={handleMinutesChange}
+                  defaultValue="00"
+                  style={styles.Timeinput}
+                />
+              </View>
+            </>
+          )}
           <View style={styles.inputContainer}>
             <Text style={styles.label}>Nhắc nhở</Text>
             <TouchableOpacity style={styles.switch} onPress={handleSave}>
