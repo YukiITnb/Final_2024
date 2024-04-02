@@ -6,7 +6,7 @@ import { icons } from "../constants";
 import { db } from "../db/firestore";
 import { collection, getDocs, where, query } from "firebase/firestore";
 import { useProgressStore } from "../store/progressStore";
-import { ModalYN } from "./Modal";
+import { ModalYN, ModalMS } from "./Modal";
 
 const Habit = ({
   habit_name,
@@ -124,6 +124,11 @@ const Habit = ({
             <>
               <Text style={styles.text2}>{`${progress}/${target}`}</Text>
               <Text style={styles.text2}>{`${unit}`}</Text>
+              <ModalMS
+                visible={isModalVisible}
+                onRequestClose={handleCloseModal}
+                habit_id={habit_id}
+              />
             </>
           )}
           {type === "YN" && (
@@ -133,6 +138,7 @@ const Habit = ({
               <ModalYN
                 visible={isModalVisible}
                 onRequestClose={handleCloseModal}
+                habit_id={habit_id}
               />
             </>
           )}

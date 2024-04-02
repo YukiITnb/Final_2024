@@ -43,7 +43,6 @@ const Homescr = ({ navigation }) => {
       setHabits(habitList);
       setIsLoading(false);
     });
-    setRefresh(false);
   }, [refresh]);
 
   const setProgress = useProgressStore((state) => state.setProgress);

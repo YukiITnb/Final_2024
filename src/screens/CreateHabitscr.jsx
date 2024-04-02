@@ -61,6 +61,9 @@ const CreateHabit = ({ navigation, route }) => {
   const [unit, setUnit] = useState("");
 
   const setRefresh = useProgressStore((state) => state.setRefresh);
+  const refreshData = () => {
+    setRefresh((prevRefresh) => !prevRefresh);
+  };
   const day = new Date();
   const today = `${day.getDate()}_${day.getMonth() + 1}_${day.getFullYear()}`;
 
@@ -81,7 +84,9 @@ const CreateHabit = ({ navigation, route }) => {
       const habitsCollection = collection(db, "Habit");
 
       let habit = {
-        habit_id: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),
+        habit_id:
+          Math.random().toString(36).substring(2, 15) +
+          Math.random().toString(36).substring(2, 15),
         uid: uid,
         name: name,
         description: description,
@@ -90,13 +95,13 @@ const CreateHabit = ({ navigation, route }) => {
         type: habitType,
       };
 
-      if (habitType === 'CountingTime') {
+      if (habitType === "CountingTime") {
         habit = {
           ...habit,
           hours: hours_input,
           minutes: minutes_input,
         };
-      } else if (habitType === 'Measure') {
+      } else if (habitType === "Measure") {
         habit = {
           ...habit,
           target: target,
@@ -111,23 +116,24 @@ const CreateHabit = ({ navigation, route }) => {
       let repeatData = {
         day: today,
       };
-      if (habitType === 'CountingTime') {
+      if (habitType === "CountingTime") {
         repeatData = {
           ...repeatData,
           break_time: 0,
           complete: false,
           progress: 0,
           time: (parseInt(hours_input) * 60 + parseInt(minutes_input)) * 60,
-          time_remain: (parseInt(hours_input) * 60 + parseInt(minutes_input)) * 60,
+          time_remain:
+            (parseInt(hours_input) * 60 + parseInt(minutes_input)) * 60,
         };
-      } else if (habitType === 'Measure') {
+      } else if (habitType === "Measure") {
         repeatData = {
           ...repeatData,
           progress: 0,
           target: target,
           unit: unit,
         };
-      } else if (habitType === 'YN') {
+      } else if (habitType === "YN") {
         repeatData = {
           ...repeatData,
           isCompleted: false,
@@ -135,7 +141,7 @@ const CreateHabit = ({ navigation, route }) => {
       }
       await addDoc(repeatCollection, repeatData);
 
-      setRefresh(true);
+      refreshData();
 
       navigation.navigate("Home");
     } catch (e) {
@@ -191,27 +197,27 @@ const CreateHabit = ({ navigation, route }) => {
               onChangeText={setDescription}
             />
           </View>
-          {habitType === 'Measure' && (
+          {habitType === "Measure" && (
             <>
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>Mục tiêu</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="v.d. 10"
-              value={target}
-              onChangeText={setTarget}
-            />
-          </View>
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>Đơn vị</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="v.d. km, trang, lần"
-              value={unit}
-              onChangeText={setUnit}
-            />
-          </View>
-          </>
+              <View style={styles.inputContainer}>
+                <Text style={styles.label}>Mục tiêu</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="v.d. 10"
+                  value={target}
+                  onChangeText={setTarget}
+                />
+              </View>
+              <View style={styles.inputContainer}>
+                <Text style={styles.label}>Đơn vị</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="v.d. km, trang, lần"
+                  value={unit}
+                  onChangeText={setUnit}
+                />
+              </View>
+            </>
           )}
           <View style={styles.inputContainer}>
             <Text style={styles.label}>Màu sắc</Text>
@@ -246,7 +252,7 @@ const CreateHabit = ({ navigation, route }) => {
               horizontal
             />
           </View>
-          {habitType === 'CountingTime' && (
+          {habitType === "CountingTime" && (
             <>
               <Text style={styles.label}>Thời gian thực hiện hàng ngày</Text>
               <View style={styles.Timeinputcontainer}>
