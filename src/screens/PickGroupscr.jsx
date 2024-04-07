@@ -25,7 +25,10 @@ export default function PickGroup({ navigation }) {
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fafafa" }}>
       <View style={styles.container}>
         <Text style={styles.title}>Channels</Text>
-        <TouchableOpacity style={styles.switch}>
+        <TouchableOpacity
+          style={styles.switch}
+          onPress={() => navigation.navigate("CreateGroup")}
+        >
           <Text style={styles.switchText}>Create new Group</Text>
         </TouchableOpacity>
         <ScrollView

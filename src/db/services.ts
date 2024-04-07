@@ -11,12 +11,34 @@ import {
 } from "firebase/firestore";
 import { getDay, format } from "date-fns";
 
+const uid = "lOpUfFvfigNs0VbulAatN3rvRWl2";
+
+async function getCollectionDocs(collectionName) {
+  const collectionRef = collection(db, collectionName);
+  const collectionQuery = query(collectionRef, where("uid", "==", uid));
+  return await getDocs(collectionQuery);
+}
+
+async function getCollectionDocsNoID(collectionName) {
+  const collectionRef = collection(db, collectionName);
+  return await getDocs(collectionRef);
+}
+
+async function getHabitDoc(habit_id) {
+  const habitQuery = query(
+    collection(db, "Habit"),
+    where("habit_id", "==", habit_id),
+    where("uid", "==", uid)
+  );
+  const habitDocs = await getDocs(habitQuery);
+  return habitDocs.size > 0 ? habitDocs.docs[0] : null;
+}
+
 async function getHabits() {
   try {
     const today = getDay(new Date()) + 1;
-    const habitsCollection = collection(db, "Habit");
-    const habitSnapshot = await getDocs(habitsCollection);
-    const habitList = habitSnapshot.docs
+    const habitSnapshot = await getCollectionDocs("Habit");
+    return habitSnapshot.docs
       .map((doc) => {
         const data = doc.data();
         if (data.weekday.includes(today)) {
@@ -24,68 +46,45 @@ async function getHabits() {
             habit_name: data.name,
             description: data.description,
             color: data.color,
-            hours: data.hours,
-            minutes: data.minutes,
             habit_id: data.habit_id,
             type: data.type,
           };
         }
       })
       .filter(Boolean);
-    return habitList;
   } catch (error) {
-    // Handle error
     console.error("Error fetching habits:", error);
   }
 }
 
 async function getHabitsname() {
   try {
-    const habitsCollection = collection(db, "Habit");
-    const habitSnapshot = await getDocs(habitsCollection);
-    const habitList = habitSnapshot.docs.map((doc) => {
+    const habitSnapshot = await getCollectionDocs("Habit");
+    return habitSnapshot.docs.map((doc) => {
       const data = doc.data();
       return {
         habit_name: data.name,
         habit_id: data.habit_id,
       };
     });
-    return habitList;
   } catch (error) {
-    // Handle error
     console.error("Error fetching habits:", error);
   }
 }
 
 const fetchData = async ({ habit_id, dates }) => {
   try {
-    const habitQuery = query(
-      collection(db, "Habit"),
-      where("habit_id", "==", habit_id)
-    );
-    const habitDocs = await getDocs(habitQuery);
-
-    if (habitDocs.size > 0) {
-      const habitDoc = habitDocs.docs[0];
-
+    const habitDoc = await getHabitDoc(habit_id);
+    if (habitDoc) {
       const repeatQuery = query(
         collection(habitDoc.ref, "repeat"),
         where("day", "in", dates)
       );
       const repeatDocs = await getDocs(repeatQuery);
-
-      if (repeatDocs.size > 0) {
-        return repeatDocs.docs.map((repeatDoc) => ({
-          date: repeatDoc.data().day,
-          progress: repeatDoc.data().progress,
-        }));
-      } else {
-        console.log("No such document in repeat");
-      }
-    } else {
-      console.log("No such document in Habit collection with habit_id:", {
-        habit_id,
-      });
+      return repeatDocs.docs.map((repeatDoc) => ({
+        date: repeatDoc.data().day,
+        progress: repeatDoc.data().progress,
+      }));
     }
   } catch (error) {
     console.error("Error getting documents:", error);
@@ -95,7 +94,7 @@ const fetchData = async ({ habit_id, dates }) => {
 const fetchTodayRepeats = async () => {
   try {
     const today = format(new Date(), "d_M_yyyy");
-    const habitDocs = await getDocs(collection(db, "Habit"));
+    const habitDocs = await getCollectionDocs("Habit");
     let allRepeats = [];
 
     for (const habitDoc of habitDocs.docs) {
@@ -128,9 +127,8 @@ async function userSignUp(userData) {
 
 async function getGroups() {
   try {
-    const groupsCollection = collection(db, "Group");
-    const groupSnapshot = await getDocs(groupsCollection);
-    const groupList = groupSnapshot.docs
+    const groupSnapshot = await getCollectionDocsNoID("Group");
+    return groupSnapshot.docs
       .map((doc) => {
         const data = doc.data();
         return {
@@ -142,26 +140,18 @@ async function getGroups() {
         };
       })
       .filter(Boolean);
-    return groupList;
   } catch (error) {
-    // Handle error
     console.error("Error fetching groupList:", error);
   }
 }
 
 async function updateHabit(habit_id, updatedData) {
   try {
-    const habitQuery = query(
-      collection(db, "Habit"),
-      where("habit_id", "==", habit_id)
-    );
-    const habitDocs = await getDocs(habitQuery);
-    if (habitDocs.size > 0) {
-      const habitDoc = habitDocs.docs[0];
-
+    const habitDoc = await getHabitDoc(habit_id);
+    if (habitDoc) {
       await updateDoc(habitDoc.ref, updatedData);
+      console.log("Habit updated successfully");
     }
-    console.log("Habit updated successfully");
   } catch (error) {
     console.error("Error updating habit:", error);
   }
@@ -173,15 +163,9 @@ async function updateHabitRepeat(habit_id, updatedData) {
     const day = `${today.getDate()}_${
       today.getMonth() + 1
     }_${today.getFullYear()}`;
-    const habitQuery = query(
-      collection(db, "Habit"),
-      where("habit_id", "==", habit_id)
-    );
-    const habitDocs = await getDocs(habitQuery);
+    const habitDoc = await getHabitDoc(habit_id);
 
-    if (habitDocs.size > 0) {
-      const habitDoc = habitDocs.docs[0];
-
+    if (habitDoc) {
       const repeatQuery = query(
         collection(habitDoc.ref, "repeat"),
         where("day", "==", day)
@@ -191,13 +175,7 @@ async function updateHabitRepeat(habit_id, updatedData) {
       if (repeatDocs.size > 0) {
         const repeatDoc = repeatDocs.docs[0];
         await updateDoc(repeatDoc.ref, updatedData);
-      } else {
-        console.log("No such document in repeat");
       }
-    } else {
-      console.log("No such document in Habit collection with habit_id:", {
-        habit_id,
-      });
     }
   } catch (error) {
     console.error("Error getting documents:", error);

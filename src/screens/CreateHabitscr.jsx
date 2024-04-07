@@ -51,7 +51,12 @@ const Weekday = [
 ];
 
 const CreateHabit = ({ navigation, route }) => {
-  const { habitType } = route.params;
+  const { habitType, gid, habit_id } = route.params;
+  const isGroupHabit = gid !== undefined;
+  const finalHabitId =
+    habit_id ||
+    Math.random().toString(36).substring(2, 15) +
+      Math.random().toString(36).substring(2, 15);
   const [selectedDays, setSelectedDays] = useState([]);
   const [hours_input, setHours] = useState("0");
   const [minutes_input, setMinutes] = useState("0");
@@ -84,10 +89,7 @@ const CreateHabit = ({ navigation, route }) => {
       const habitsCollection = collection(db, "Habit");
 
       let habit = {
-        habit_id:
-          Math.random().toString(36).substring(2, 15) +
-          Math.random().toString(36).substring(2, 15),
-        uid: uid,
+        habit_id: finalHabitId,
         name: name,
         description: description,
         color: color,
@@ -143,7 +145,7 @@ const CreateHabit = ({ navigation, route }) => {
 
       refreshData();
 
-      navigation.navigate("Home");
+      navigation.goBack();
     } catch (e) {
       console.error("Error adding document: ", e);
     }
