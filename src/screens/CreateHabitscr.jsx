@@ -75,7 +75,7 @@ const CreateHabit = ({ navigation, route }) => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const uid = useProgressStore((state) => state.uid);
-
+  console.log("uid", uid);
   const handleDayPress = (id) => {
     if (selectedDays.includes(id)) {
       setSelectedDays(selectedDays.filter((dayId) => dayId !== id));
@@ -95,6 +95,7 @@ const CreateHabit = ({ navigation, route }) => {
         color: color,
         weekday: selectedDays,
         type: habitType,
+        uid: uid,
       };
 
       if (habitType === "CountingTime") {
@@ -133,11 +134,13 @@ const CreateHabit = ({ navigation, route }) => {
           ...repeatData,
           progress: 0,
           target: target,
+          done: 0,
           unit: unit,
         };
       } else if (habitType === "YN") {
         repeatData = {
           ...repeatData,
+          progress: 0,
           isCompleted: false,
         };
       }

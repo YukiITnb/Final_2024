@@ -8,6 +8,7 @@ import Calendarscr from "../screens/Calendarscr";
 import Settingscr from "../screens/Settingscr";
 import PickGroup from "../screens/PickGroupscr";
 import CreateGroup from "../screens/CreateGroup";
+import Group from "../screens/Group";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 const Tab = createBottomTabNavigator();
@@ -36,7 +37,7 @@ function TopTabsGroup() {
           tabBarLabel: "Group",
         }}
       />
-      <TopTabs.Screen name="My Group" component={CreateGroup} />
+      <TopTabs.Screen name="My Group" component={Group} />
     </TopTabs.Navigator>
   );
 }

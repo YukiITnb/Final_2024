@@ -71,7 +71,7 @@ const Habit = ({
                 repeatDoc.data().time - repeatDoc.data().time_remain
               );
             } else if (type === "Measure") {
-              setProgress(repeatDoc.data().progress);
+              setProgress(repeatDoc.data().done);
               setTarget(repeatDoc.data().target);
               setUnit(repeatDoc.data().unit);
             } else if (type === "YN") {
@@ -128,6 +128,7 @@ const Habit = ({
                 visible={isModalVisible}
                 onRequestClose={handleCloseModal}
                 habit_id={habit_id}
+                target={target}
               />
             </>
           )}

@@ -12,7 +12,7 @@ import {
 import FeatherIcon from "react-native-vector-icons/Feather";
 import { useProgressStore } from "../store/progressStore";
 
-export default function CreateGroup({ navigation }) {
+export default function Group({ navigation }) {
   const uid = useProgressStore((state) => state.uid);
   const [form, setForm] = React.useState({
     gid:
@@ -31,38 +31,39 @@ export default function CreateGroup({ navigation }) {
 
   return (
     <View style={{ flex: 1, backgroundColor: "#f7f7f7" }}>
-      <View style={styles.actionContainer}>
-        <SafeAreaView>
-          <View style={styles.actionWrapper}>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.goBack();
-              }}
-              style={{ marginRight: "auto" }}
-            >
-              <View style={[styles.action, styles.actionFilled]}>
-                <FeatherIcon color="#000" name="chevron-left" size={22} />
-              </View>
-            </TouchableOpacity>
-            <View style={{ marginRight: "auto" }}>
-              <Text style={{ fontSize: 20, fontWeight: "600", color: "white" }}>
-                Create Group
-              </Text>
-            </View>
-            <TouchableOpacity
-              onPress={() => {
-                // handle onPress
-              }}
-            >
-              <View style={styles.action}>
-                <FeatherIcon color="#fff" name="share" size={22} />
-              </View>
-            </TouchableOpacity>
-          </View>
-        </SafeAreaView>
-      </View>
-
       <ScrollView contentContainerStyle={styles.content}>
+        <View style={styles.actionContainer}>
+          <SafeAreaView>
+            <View style={styles.actionWrapper}>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.goBack();
+                }}
+                style={{ marginRight: "auto" }}
+              >
+                <View style={[styles.action, styles.actionFilled]}>
+                  <FeatherIcon color="#000" name="chevron-left" size={22} />
+                </View>
+              </TouchableOpacity>
+              <View style={{ marginRight: "auto" }}>
+                <Text
+                  style={{ fontSize: 20, fontWeight: "600", color: "white" }}
+                >
+                  Create Group
+                </Text>
+              </View>
+              <TouchableOpacity
+                onPress={() => {
+                  // handle onPress
+                }}
+              >
+                <View style={styles.action}>
+                  <FeatherIcon color="#fff" name="share" size={22} />
+                </View>
+              </TouchableOpacity>
+            </View>
+          </SafeAreaView>
+        </View>
         <Image
           alt=""
           source={{

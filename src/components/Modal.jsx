@@ -17,14 +17,14 @@ export const ModalYN = ({ visible, onRequestClose, habit_id }) => {
   };
   const handlePressModal1 = async () => {
     onRequestClose();
-    const updatedData = { isCompleted: false };
+    const updatedData = { isCompleted: false, progress: 0 };
     await updateHabitRepeat(habit_id, updatedData);
     refreshData();
   };
 
   const handlePressModal2 = async () => {
     onRequestClose();
-    const updatedData = { isCompleted: true };
+    const updatedData = { isCompleted: true, progress: 100 };
     await updateHabitRepeat(habit_id, updatedData);
     refreshData();
   };
@@ -72,7 +72,7 @@ export const ModalYN = ({ visible, onRequestClose, habit_id }) => {
   );
 };
 
-export const ModalMS = ({ visible, onRequestClose, habit_id }) => {
+export const ModalMS = ({ visible, onRequestClose, habit_id, target }) => {
   const setRefresh = useProgressStore((state) => state.setRefresh);
   const [inputValue, setInputValue] = useState("");
   const refreshData = () => {
@@ -80,7 +80,10 @@ export const ModalMS = ({ visible, onRequestClose, habit_id }) => {
   };
   const handlePressModal = async () => {
     onRequestClose();
-    const updatedData = { progress: inputValue };
+    const updatedData = {
+      done: inputValue,
+      progress: (inputValue / target) * 100,
+    };
     await updateHabitRepeat(habit_id, updatedData);
     refreshData();
   };
