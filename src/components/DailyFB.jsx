@@ -1,58 +1,35 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, Button, TextInput } from "react-native";
 import axios from "axios";
 
-import { fetchTodayRepeats } from "../db/services";
+import { getTodayDailyReport } from "../db/services";
 
-const DailyFB = () => {
-  const [inputText, setInputText] = useState("");
+function formatParagraph(text) {
+  let formattedText = text.replace(/\*\*/g, "").replace(/\*/g, "").trim();
+  let sections = formattedText.split(/\n\n+/);
+
+  let formattedSections = sections.map((section) => {
+    let lines = section.split("\n");
+    let formattedLines = lines.map((line) => line.trim()).join("\n");
+    return formattedLines;
+  });
+
+  let result = formattedSections.join("\n\n");
+
+  return result;
+}
+
+const DailyFB = ({ date }) => {
   const [feedback, setFeedback] = useState("");
-  const API_KEY = "AIzaSyC2xzR5vDVn4a7cjtqDq_uQciPvZ3E9Ls8";
 
-  const handleSendRequest = async () => {
-    try {
-      const response = await axios.post(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.0-pro:generateContent?key=${API_KEY}`,
-        {
-          contents: [
-            {
-              parts: [
-                {
-                  text:
-                    inputText +
-                    "Đưa ra cho tôi một số phản hồi về việc hoàn thành các Habit trong ngày hôm qua. Và những điều cần cải thiện. Đưa ra câu trả lời không quá dài, khoảng 4-5 câu.",
-                },
-              ],
-            },
-          ],
-        }
-      );
-      setFeedback(response.data?.candidates?.[0]?.content?.parts?.[0]?.text);
-      // console.log(response.data?.candidates?.[0]?.content?.parts?.[0]?.text);
-    } catch (error) {
-      if (error.response) {
-        console.error(error.response.data);
-      } else {
-        console.error(error.message);
-      }
-    }
-  };
+  useEffect(() => {
+    getTodayDailyReport(date).then((data) => {
+      setFeedback(formatParagraph(data));
+    });
+  }, [date]);
 
   return (
-    <View>
-      <TextInput
-        placeholder="Nhập % hoàn thành của các Habit"
-        value={inputText}
-        onChangeText={setInputText}
-        style={{
-          height: 100,
-          borderColor: "gray",
-          borderWidth: 1,
-          margin: 10,
-          padding: 10,
-        }}
-      />
-      <Button title="Gửi yêu cầu" onPress={handleSendRequest} />
+    <View style={{ marginTop: 10 }}>
       <Text style={{ margin: 10 }}>{feedback}</Text>
     </View>
   );

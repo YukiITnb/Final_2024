@@ -192,6 +192,28 @@ async function deleteHabit(habit_id) {
   }
 }
 
+async function getTodayDailyReport(day) {
+  try {
+    const dailyReportCollection = collection(db, "DailyReport");
+    const q = query(
+      dailyReportCollection,
+      where("uid", "==", uid),
+      where("date", "==", day)
+    );
+
+    const querySnapshot = await getDocs(q);
+    if (!querySnapshot.empty) {
+      const dailyReportDoc = querySnapshot.docs[0];
+      return dailyReportDoc.data().feedback;
+    } else {
+      console.log("No document for today's daily report");
+      return "Hãy quay lại xem feedback hôm này vào ngày mai";
+    }
+  } catch (error) {
+    console.error("Error getting today's daily report:", error);
+  }
+}
+
 export {
   getHabits,
   getHabitsname,
@@ -202,4 +224,5 @@ export {
   updateHabit,
   updateHabitRepeat,
   deleteHabit,
+  getTodayDailyReport,
 };
