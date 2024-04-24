@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import {
   StyleSheet,
   View,
@@ -8,9 +8,12 @@ import {
   TouchableOpacity,
   SafeAreaView,
   TextInput,
+  FlatList,
 } from "react-native";
 import FeatherIcon from "react-native-vector-icons/Feather";
 import { useProgressStore } from "../store/progressStore";
+import Linechartcpn from "../components/Linechart";
+import moment from "moment";
 
 export default function Group({ navigation }) {
   const uid = useProgressStore((state) => state.uid);
@@ -29,6 +32,25 @@ export default function Group({ navigation }) {
       Math.random().toString(36).substring(2, 15),
   });
 
+  const posts = [
+    { id: "1", user: "User 1", content: "This is the content of the post 1" },
+    { id: "2", user: "User 2", content: "This is the content of the post 2" },
+    // Add more posts here
+  ];
+
+  const week = useMemo(() => {
+    const start = moment().startOf("week").add(1, "day");
+
+    return Array.from({ length: 7 }).map((_, index) => {
+      const date = moment(start).add(index, "day");
+
+      return {
+        weekday: date.format("ddd"),
+        date: date.format("D_M_YYYY"),
+      };
+    });
+  }, []);
+
   return (
     <View style={{ flex: 1, backgroundColor: "#f7f7f7" }}>
       <ScrollView contentContainerStyle={styles.content}>
@@ -45,20 +67,22 @@ export default function Group({ navigation }) {
                   <FeatherIcon color="#000" name="chevron-left" size={22} />
                 </View>
               </TouchableOpacity>
-              <View style={{ marginRight: "auto" }}>
-                <Text
-                  style={{ fontSize: 20, fontWeight: "600", color: "white" }}
-                >
-                  Create Group
-                </Text>
-              </View>
               <TouchableOpacity
                 onPress={() => {
                   // handle onPress
                 }}
               >
                 <View style={styles.action}>
-                  <FeatherIcon color="#fff" name="share" size={22} />
+                  <View
+                    style={[
+                      styles.action,
+                      { backgroundColor: "#FFC0CB", width: 60 },
+                    ]}
+                  >
+                    <Text style={{ color: "#fff", fontWeight: "bold" }}>
+                      Apply
+                    </Text>
+                  </View>
                 </View>
               </TouchableOpacity>
             </View>
@@ -67,30 +91,25 @@ export default function Group({ navigation }) {
         <Image
           alt=""
           source={{
-            uri: "https://images.unsplash.com/photo-1550547660-d9450f859349?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1065&q=80",
+            uri: "https://img.freepik.com/free-vector/reading-glasses-concept-illustration_114360-8514.jpg",
           }}
           style={styles.hero}
         />
 
         <View style={styles.section}>
-          <Text style={styles.title}>Tạo một Group mới</Text>
+          <Text style={styles.title}>Group A</Text>
 
           <Text style={styles.subtitle}>
-            Tạo group để tìm bạn bè cùng chung mục tiêu
+            Group A is a group of people who love reading books. We meet every
+            sunday to discuss the book we read during the week. We also have a
+            book club where we read a book together every month.
           </Text>
         </View>
 
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <View>
-              <Text style={styles.sectionTitle}>Group name</Text>
-              <Text style={styles.sectionSubtitle}>
-                Only letter and numbers/ Max 10 characters
-              </Text>
-            </View>
-
-            <View style={styles.sectionBadge}>
-              <Text style={styles.sectionBadgeText}>Required</Text>
+              <Text style={styles.sectionTitle}>Group members</Text>
             </View>
           </View>
 
@@ -100,33 +119,15 @@ export default function Group({ navigation }) {
               { flexDirection: "row", justifyContent: "space-between" },
             ]}
           >
-            <TextInput
-              style={[styles.tetxinput, { width: "60%" }]}
-              onChangeText={(text) => setForm({ ...form, gname: text })}
-              value={form.side}
-            />
-            <TouchableOpacity
-              style={[styles.btn, { width: "30%" }]}
-              onPress={() => {
-                // Add your button handler here
-              }}
-            >
-              <Text style={styles.radioLabel}>Check</Text>
-            </TouchableOpacity>
+            <Text>Leader: Yuki</Text>
+            <Text>Member: 3/50</Text>
           </View>
         </View>
 
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <View>
-              <Text style={styles.sectionTitle}>Description</Text>
-              <Text style={styles.sectionSubtitle}>
-                Describe the group's goals
-              </Text>
-            </View>
-
-            <View style={styles.sectionBadge}>
-              <Text style={styles.sectionBadgeText}>Required</Text>
+              <Text style={styles.sectionTitle}>Group habit</Text>
             </View>
           </View>
 
@@ -136,27 +137,14 @@ export default function Group({ navigation }) {
               { flexDirection: "row", justifyContent: "space-between" },
             ]}
           >
-            <TextInput
-              style={[styles.tetxinput, { width: "100%", height: 120 }]}
-              onChangeText={(text) => setForm({ ...form, description: text })}
-              value={form.description}
-              multiline={true}
-              numberOfLines={4}
-              textAlignVertical="top"
-            />
+            <Text>Đọc sách</Text>
+            <Text>Đọc 10 trang sách</Text>
           </View>
         </View>
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <View>
-              <Text style={styles.sectionTitle}>Limit number of members</Text>
-              <Text style={styles.sectionSubtitle}>
-                Set the limit between 2 and 50
-              </Text>
-            </View>
-
-            <View style={styles.sectionBadge}>
-              <Text style={styles.sectionBadgeText}>Required</Text>
+              <Text style={styles.sectionTitle}>Group Achievement Static</Text>
             </View>
           </View>
 
@@ -166,32 +154,37 @@ export default function Group({ navigation }) {
               { flexDirection: "row", justifyContent: "space-between" },
             ]}
           >
-            <TextInput
-              style={[styles.tetxinput, { width: "100%" }]}
-              onChangeText={(text) => {
-                if (!isNaN(text)) {
-                  setForm({ ...form, maxMemNum: text });
-                }
-              }}
-              value={form.maxMemNum.toString()}
-              keyboardType="numeric"
-            />
+            <Linechartcpn selectedValue="n2j4mdw159r10hq2dta9ulf" week={week} />
           </View>
+        </View>
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <View>
+              <Text style={styles.sectionTitle}>Talks & Activites</Text>
+              <Text style={styles.sectionSubtitle}>
+                See the activities of the group
+              </Text>
+            </View>
+          </View>
+
+          <FlatList
+            data={posts}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <View
+                style={{
+                  backgroundColor: "#fff",
+                  padding: 10,
+                  marginBottom: 10,
+                }}
+              >
+                <Text style={{ fontWeight: "bold" }}>{item.user}</Text>
+                <Text>{item.content}</Text>
+              </View>
+            )}
+          />
         </View>
       </ScrollView>
-
-      <View style={styles.overlay}>
-        <TouchableOpacity
-          onPress={() => {
-            // handle onPress
-          }}
-          style={{ flex: 1, paddingHorizontal: 24 }}
-        >
-          <View style={styles.btn}>
-            <Text style={styles.btnText}>Next</Text>
-          </View>
-        </TouchableOpacity>
-      </View>
     </View>
   );
 }

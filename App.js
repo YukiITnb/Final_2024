@@ -9,6 +9,7 @@ import CreateHabit from "./src/screens/CreateHabitscr";
 import Loginscr from "./src/screens/Loginscr";
 import Signupscr from "./src/screens/Signupscr";
 import CreateGroup from "./src/screens/CreateGroup";
+import Group from "./src/screens/Group";
 import { useProgressStore } from "./src/store/progressStore";
 import * as SplashScreen from "expo-splash-screen";
 
@@ -72,6 +73,11 @@ export default function App() {
             <Stack.Screen
               name="CreateGroup"
               component={CreateGroup}
+              options={{ animation: "fade" }}
+            />
+            <Stack.Screen
+              name="showGroup"
+              component={Group}
               options={{ animation: "fade" }}
             />
           </>

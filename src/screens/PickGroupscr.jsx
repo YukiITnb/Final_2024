@@ -16,7 +16,7 @@ export default function PickGroup({ navigation }) {
 
   useEffect(() => {
     getGroups().then((groupList) => {
-      console.log(groupList);
+      // console.log(groupList);
       setGroups(groupList);
     });
   }, []);
@@ -42,6 +42,7 @@ export default function PickGroup({ navigation }) {
                 key={index}
                 onPress={() => {
                   setValue(index);
+                  navigation.navigate("showGroup");
                 }}
               >
                 <View style={[styles.radio, isActive && styles.radioActive]}>

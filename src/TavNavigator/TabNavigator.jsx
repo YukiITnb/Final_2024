@@ -34,10 +34,10 @@ function TopTabsGroup() {
         name="main"
         component={PickGroup}
         options={{
-          tabBarLabel: "Group",
+          tabBarLabel: "Pick Group",
         }}
       />
-      <TopTabs.Screen name="My Group" component={Group} />
+      <TopTabs.Screen name="My Group" component={PickGroup} />
     </TopTabs.Navigator>
   );
 }
