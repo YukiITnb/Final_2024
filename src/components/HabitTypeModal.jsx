@@ -1,23 +1,29 @@
 import React, { useState } from "react";
 import { Modal, Text, View, TouchableOpacity, StyleSheet } from "react-native";
 
-const HabitTypeModal = ({ navigation, visible, onRequestClose }) => {
+const HabitTypeModal = ({
+  navigation,
+  visible,
+  onRequestClose,
+  habit_id,
+  gid,
+}) => {
   const handlePressModal1 = () => {
     onRequestClose();
     const habitType = "YN";
-    navigation.navigate("CreateHabit", { habitType });
+    navigation.navigate("CreateHabit", { habitType, gid, habit_id });
   };
 
   const handlePressModal2 = () => {
     onRequestClose();
     const habitType = "Measure";
-    navigation.navigate("CreateHabit", { habitType });
+    navigation.navigate("CreateHabit", { habitType, gid, habit_id });
   };
 
   const handlePressModal3 = () => {
     onRequestClose();
     const habitType = "CountingTime";
-    navigation.navigate("CreateHabit", { habitType });
+    navigation.navigate("CreateHabit", { habitType, gid, habit_id });
   };
 
   return (

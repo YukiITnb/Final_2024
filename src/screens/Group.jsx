@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import {
   StyleSheet,
   View,
@@ -14,23 +14,47 @@ import FeatherIcon from "react-native-vector-icons/Feather";
 import { useProgressStore } from "../store/progressStore";
 import Linechartcpn from "../components/Linechart";
 import moment from "moment";
+import HabitTypeModal from "../components/HabitTypeModal";
+import { arrayUnion } from "firebase/firestore";
+import {
+  getGroupByGid,
+  getUserById,
+  getHabitById,
+  updateUser,
+} from "../db/services";
 
-export default function Group({ navigation }) {
+export default function Group({ navigation, route }) {
+  const { gid } = route.params;
+  const [group, setGroup] = useState(null);
+  const [user, setUser] = useState(null);
+  const [habit, setHabit] = useState(null);
   const uid = useProgressStore((state) => state.uid);
-  const [form, setForm] = React.useState({
-    gid:
-      Math.random().toString(36).substring(2, 15) +
-      Math.random().toString(36).substring(2, 15),
-    gname: "",
-    description: "",
-    curMemNum: 1,
-    maxMemNum: 0,
-    ownerId: uid,
-    members: [uid],
-    habit_id:
-      Math.random().toString(36).substring(2, 15) +
-      Math.random().toString(36).substring(2, 15),
-  });
+
+  useEffect(() => {
+    getGroupByGid(gid).then((groupData) => {
+      setGroup(groupData);
+      if (groupData) {
+        getUserById(groupData.ownerId).then((userData) => {
+          setUser(userData);
+        });
+      }
+      if (groupData.habit_id != "") {
+        getHabitById(groupData.habit_id).then((habitData) => {
+          setHabit(habitData);
+        });
+      }
+    });
+  }, []);
+
+  const [isModalVisible, setModalVisible] = useState(false);
+
+  const handleOpenModal = () => {
+    setModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalVisible(false);
+  };
 
   const posts = [
     { id: "1", user: "User 1", content: "This is the content of the post 1" },
@@ -69,7 +93,8 @@ export default function Group({ navigation }) {
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => {
-                  // handle onPress
+                  const updateData = { groups: arrayUnion(group.gid) };
+                  updateUser(uid, updateData);
                 }}
               >
                 <View style={styles.action}>
@@ -97,12 +122,10 @@ export default function Group({ navigation }) {
         />
 
         <View style={styles.section}>
-          <Text style={styles.title}>Group A</Text>
+          <Text style={styles.title}>{group ? group.gname : "Loading..."}</Text>
 
           <Text style={styles.subtitle}>
-            Group A is a group of people who love reading books. We meet every
-            sunday to discuss the book we read during the week. We also have a
-            book club where we read a book together every month.
+            {group ? group.description : "Loading..."}
           </Text>
         </View>
 
@@ -119,28 +142,62 @@ export default function Group({ navigation }) {
               { flexDirection: "row", justifyContent: "space-between" },
             ]}
           >
-            <Text>Leader: Yuki</Text>
-            <Text>Member: 3/50</Text>
+            <Text>Leader: {user ? user.userName : "Loading..."}</Text>
+            <Text>
+              Member: {group ? group.curMemNum : "Loading..."}/
+              {group ? group.maxMemNum : "Loading..."}
+            </Text>
           </View>
         </View>
+        {group && group.flag == 0 && (
+          <View style={styles.section}>
+            <View style={styles.sectionHeader}>
+              <View>
+                <Text style={styles.sectionTitle}>Habit for Group</Text>
+                <Text style={styles.sectionSubtitle}>
+                  Set a habit for everyone in the group
+                </Text>
+              </View>
 
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <View>
-              <Text style={styles.sectionTitle}>Group habit</Text>
+              <View style={styles.sectionBadge}>
+                <Text style={styles.sectionBadgeText}>Required</Text>
+              </View>
+            </View>
+
+            <View
+              style={[
+                styles.sectionOptions,
+                { flexDirection: "row", justifyContent: "space-between" },
+              ]}
+            >
+              <TouchableOpacity
+                style={[styles.btn, { width: "100%" }]}
+                onPress={handleOpenModal}
+              >
+                <Text style={styles.radioLabel}>Set habit</Text>
+              </TouchableOpacity>
             </View>
           </View>
+        )}
+        {habit && (
+          <View style={styles.section}>
+            <View style={styles.sectionHeader}>
+              <View>
+                <Text style={styles.sectionTitle}>Group habit</Text>
+              </View>
+            </View>
 
-          <View
-            style={[
-              styles.sectionOptions,
-              { flexDirection: "row", justifyContent: "space-between" },
-            ]}
-          >
-            <Text>Đọc sách</Text>
-            <Text>Đọc 10 trang sách</Text>
+            <View
+              style={[
+                styles.sectionOptions,
+                { flexDirection: "row", justifyContent: "space-between" },
+              ]}
+            >
+              <Text>{habit ? habit.name : "Loading..."}</Text>
+              <Text>{habit ? habit.description : "Loading..."}</Text>
+            </View>
           </View>
-        </View>
+        )}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <View>
@@ -157,6 +214,7 @@ export default function Group({ navigation }) {
             <Linechartcpn selectedValue="n2j4mdw159r10hq2dta9ulf" week={week} />
           </View>
         </View>
+
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <View>
@@ -185,6 +243,13 @@ export default function Group({ navigation }) {
           />
         </View>
       </ScrollView>
+      <HabitTypeModal
+        navigation={navigation}
+        visible={isModalVisible}
+        onRequestClose={handleCloseModal}
+        gid={gid}
+        habit_id={group ? group.habit_id : ""}
+      />
     </View>
   );
 }

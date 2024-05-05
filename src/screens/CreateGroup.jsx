@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
   View,
@@ -11,6 +11,8 @@ import {
 } from "react-native";
 import FeatherIcon from "react-native-vector-icons/Feather";
 import { useProgressStore } from "../store/progressStore";
+import { createGroup, updateUser } from "../db/services";
+import { arrayUnion } from "firebase/firestore";
 
 export default function CreateGroup({ navigation }) {
   const uid = useProgressStore((state) => state.uid);
@@ -23,10 +25,11 @@ export default function CreateGroup({ navigation }) {
     curMemNum: 1,
     maxMemNum: 0,
     ownerId: uid,
-    members: [uid],
+    members: [],
     habit_id:
       Math.random().toString(36).substring(2, 15) +
       Math.random().toString(36).substring(2, 15),
+    flag: 0,
   });
 
   return (
@@ -66,7 +69,7 @@ export default function CreateGroup({ navigation }) {
         <Image
           alt=""
           source={{
-            uri: "https://images.unsplash.com/photo-1550547660-d9450f859349?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1065&q=80",
+            uri: "https://img.freepik.com/free-vector/reading-glasses-concept-illustration_114360-8514.jpg",
           }}
           style={styles.hero}
         />
@@ -182,12 +185,15 @@ export default function CreateGroup({ navigation }) {
       <View style={styles.overlay}>
         <TouchableOpacity
           onPress={() => {
-            // handle onPress
+            createGroup(form);
+            const updateData = { groups: arrayUnion(form.gid) };
+            updateUser(form.ownerId, updateData);
+            navigation.navigate("Group", { gid: form.gid });
           }}
           style={{ flex: 1, paddingHorizontal: 24 }}
         >
           <View style={styles.btn}>
-            <Text style={styles.btnText}>Next</Text>
+            <Text style={styles.btnText}>Create</Text>
           </View>
         </TouchableOpacity>
       </View>

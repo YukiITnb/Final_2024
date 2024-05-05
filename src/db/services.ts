@@ -9,9 +9,19 @@ import {
   updateDoc,
   deleteDoc,
 } from "firebase/firestore";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { getDay, format } from "date-fns";
 
-const uid = "lOpUfFvfigNs0VbulAatN3rvRWl2";
+let uid = null;
+
+const auth = getAuth();
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    uid = user.uid;
+  } else {
+    uid = null;
+  }
+});
 
 async function getCollectionDocs(collectionName) {
   const collectionRef = collection(db, collectionName);
@@ -145,6 +155,31 @@ async function getGroups() {
   }
 }
 
+async function getGroupByGid(gid) {
+  try {
+    const groupQuery = query(collection(db, "Group"), where("gid", "==", gid));
+    const groupSnapshot = await getDocs(groupQuery);
+
+    if (!groupSnapshot.empty) {
+      const data = groupSnapshot.docs[0].data();
+      return {
+        gname: data.gname,
+        curMemNum: data.curMemNum,
+        maxMemNum: data.maxMemNum,
+        description: data.description,
+        ownerId: data.ownerId,
+        gid: data.gid,
+        habit_id: data.habit_id,
+        flag: data.flag,
+      };
+    } else {
+      console.log("No such group!");
+    }
+  } catch (error) {
+    console.error("Error fetching group:", error);
+  }
+}
+
 async function updateHabit(habit_id, updatedData) {
   try {
     const habitDoc = await getHabitDoc(habit_id);
@@ -214,6 +249,73 @@ async function getTodayDailyReport(day) {
   }
 }
 
+async function createGroup(groupData) {
+  try {
+    const groupCollection = collection(db, "Group");
+    const docRef = await addDoc(groupCollection, groupData);
+    console.log("Group created with ID: ", docRef.id);
+  } catch (e) {
+    console.error("Error adding document: ", e);
+  }
+}
+
+async function getUserById(uid) {
+  try {
+    const UserQuery = query(collection(db, "Users"), where("uid", "==", uid));
+    const userSnapshot = await getDocs(UserQuery);
+
+    if (!userSnapshot.empty) {
+      const data = userSnapshot.docs[0].data();
+      return {
+        userName: data.userName,
+      };
+    } else {
+      console.log("No such group!");
+    }
+  } catch (error) {
+    console.error("Error fetching group:", error);
+  }
+}
+
+async function getHabitById(habit_id) {
+  try {
+    const habitQuery = query(
+      collection(db, "Habit"),
+      where("habit_id", "==", habit_id)
+    );
+    const habitSnapshot = await getDocs(habitQuery);
+
+    if (!habitSnapshot.empty) {
+      const data = habitSnapshot.docs[0].data();
+      return {
+        name: data.name,
+        description: data.description,
+      };
+    } else {
+      console.log("No such group!");
+    }
+  } catch (error) {
+    console.error("Error fetching group:", error);
+  }
+}
+
+async function updateUser(uid, userData) {
+  try {
+    const UserQuery = query(collection(db, "Users"), where("uid", "==", uid));
+    const userSnapshot = await getDocs(UserQuery);
+
+    if (!userSnapshot.empty) {
+      const userDoc = userSnapshot.docs[0];
+      await updateDoc(userDoc.ref, userData);
+      console.log("User updated successfully");
+    } else {
+      console.log("No such user!");
+    }
+  } catch (error) {
+    console.error("Error fetching user:", error);
+  }
+}
+
 export {
   getHabits,
   getHabitsname,
@@ -225,4 +327,9 @@ export {
   updateHabitRepeat,
   deleteHabit,
   getTodayDailyReport,
+  createGroup,
+  getGroupByGid,
+  getUserById,
+  getHabitById,
+  updateUser,
 };

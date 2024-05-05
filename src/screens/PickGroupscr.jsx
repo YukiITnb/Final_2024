@@ -35,33 +35,35 @@ export default function PickGroup({ navigation }) {
           style={{ height: "75%" }}
           showsVerticalScrollIndicator={false}
         >
-          {groups.map(({ gname, curMemNum, maxMemNum, description }, index) => {
-            const isActive = value === index;
-            return (
-              <TouchableOpacity
-                key={index}
-                onPress={() => {
-                  setValue(index);
-                  navigation.navigate("showGroup");
-                }}
-              >
-                <View style={[styles.radio, isActive && styles.radioActive]}>
-                  <View style={styles.radioTop}>
-                    <Text style={styles.radioLabel}>#{gname}</Text>
+          {groups.map(
+            ({ gname, curMemNum, maxMemNum, description, gid }, index) => {
+              const isActive = value === index;
+              return (
+                <TouchableOpacity
+                  key={index}
+                  onPress={() => {
+                    setValue(index);
+                    navigation.navigate("showGroup", { gid });
+                  }}
+                >
+                  <View style={[styles.radio, isActive && styles.radioActive]}>
+                    <View style={styles.radioTop}>
+                      <Text style={styles.radioLabel}>#{gname}</Text>
 
-                    <Text style={styles.radioUsers}>
-                      <Text style={{ fontWeight: "700" }}>
-                        {curMemNum}/{maxMemNum}
-                      </Text>{" "}
-                      members
-                    </Text>
+                      <Text style={styles.radioUsers}>
+                        <Text style={{ fontWeight: "700" }}>
+                          {curMemNum}/{maxMemNum}
+                        </Text>{" "}
+                        members
+                      </Text>
+                    </View>
+
+                    <Text style={styles.radioDescription}>{description}</Text>
                   </View>
-
-                  <Text style={styles.radioDescription}>{description}</Text>
-                </View>
-              </TouchableOpacity>
-            );
-          })}
+                </TouchableOpacity>
+              );
+            }
+          )}
         </ScrollView>
       </View>
     </SafeAreaView>

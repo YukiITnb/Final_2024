@@ -23,7 +23,6 @@ const Homescr = ({ navigation }) => {
   const [habits, setHabits] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const refresh = useProgressStore((state) => state.refresh);
-  const setRefresh = useProgressStore((state) => state.setRefresh);
   const [isModalVisible, setModalVisible] = useState(false);
 
   const handleOpenModal = () => {
@@ -45,7 +44,6 @@ const Homescr = ({ navigation }) => {
     });
   }, [refresh]);
 
-  const setProgress = useProgressStore((state) => state.setProgress);
   const increaseProgress = useProgressStore((state) => state.increaseProgress);
   const resetProgress = useProgressStore((state) => state.resetProgress);
 
@@ -82,8 +80,21 @@ const Homescr = ({ navigation }) => {
         </View>
       </View>
       <ProgressComponent />
-      <Button title="Update Progress" onPress={increaseProgress} />
-      <Button title="Reset Progress" onPress={resetProgress} />
+      <View style={{ flex: 0.07 }}>
+        <View style={styles.containertext}>
+          <Text
+            style={{
+              fontSize: 20,
+              paddingBottom: 10,
+              textAlign: "center",
+              fontWeight: "bold",
+              color: COLORS.primary,
+            }}
+          >
+            Your personal habits
+          </Text>
+        </View>
+      </View>
       <View style={{ flex: 0.7 }}>
         <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
           {isLoading && <LoadingSpiner />}

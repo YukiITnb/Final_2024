@@ -75,7 +75,6 @@ const CreateHabit = ({ navigation, route }) => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const uid = useProgressStore((state) => state.uid);
-  console.log("uid", uid);
   const handleDayPress = (id) => {
     if (selectedDays.includes(id)) {
       setSelectedDays(selectedDays.filter((dayId) => dayId !== id));
@@ -96,6 +95,7 @@ const CreateHabit = ({ navigation, route }) => {
         weekday: selectedDays,
         type: habitType,
         uid: uid,
+        ...(gid && { gid: gid }),
       };
 
       if (habitType === "CountingTime") {
@@ -167,7 +167,7 @@ const CreateHabit = ({ navigation, route }) => {
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
         <View>
           <TouchableOpacity
-            onPress={() => navigation.navigate("Home")}
+            onPress={() => navigation.goBack()}
             style={styles.backbnt}
           >
             <Image
