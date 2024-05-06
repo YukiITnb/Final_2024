@@ -8,6 +8,7 @@ import {
   doc,
   updateDoc,
   deleteDoc,
+  getDoc,
 } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { getDay, format } from "date-fns";
@@ -44,14 +45,26 @@ async function getHabitDoc(habit_id) {
   return habitDocs.size > 0 ? habitDocs.docs[0] : null;
 }
 
+async function getHabitDocNoId(habit_id) {
+  const habitQuery = query(
+    collection(db, "Habit"),
+    where("habit_id", "==", habit_id)
+  );
+  const habitDocs = await getDocs(habitQuery);
+  return habitDocs.size > 0 ? habitDocs.docs[0] : null;
+}
+
 async function getHabits() {
   try {
     const today = getDay(new Date()) + 1;
     const habitSnapshot = await getCollectionDocs("Habit");
+    if (!habitSnapshot) {
+      return null;
+    }
     return habitSnapshot.docs
       .map((doc) => {
         const data = doc.data();
-        if (data.weekday.includes(today)) {
+        if (data.weekday.includes(today) && !data.gid) {
           return {
             habit_name: data.name,
             description: data.description,
@@ -84,7 +97,7 @@ async function getHabitsname() {
 
 const fetchData = async ({ habit_id, dates }) => {
   try {
-    const habitDoc = await getHabitDoc(habit_id);
+    const habitDoc = await getHabitDocNoId(habit_id);
     if (habitDoc) {
       const repeatQuery = query(
         collection(habitDoc.ref, "repeat"),
@@ -141,13 +154,15 @@ async function getGroups() {
     return groupSnapshot.docs
       .map((doc) => {
         const data = doc.data();
-        return {
-          gname: data.gname,
-          curMemNum: data.curMemNum,
-          maxMemNum: data.maxMemNum,
-          description: data.description,
-          gid: data.gid,
-        };
+        if (data.flag === 1) {
+          return {
+            gname: data.gname,
+            curMemNum: data.curMemNum,
+            maxMemNum: data.maxMemNum,
+            description: data.description,
+            gid: data.gid,
+          };
+        }
       })
       .filter(Boolean);
   } catch (error) {
@@ -316,6 +331,56 @@ async function updateUser(uid, userData) {
   }
 }
 
+async function updateGroup(gid, groupData) {
+  try {
+    const groupQuery = query(collection(db, "Group"), where("gid", "==", gid));
+    const groupSnapshot = await getDocs(groupQuery);
+
+    if (!groupSnapshot.empty) {
+      const userDoc = groupSnapshot.docs[0];
+      await updateDoc(userDoc.ref, groupData);
+      console.log("group updated successfully");
+    } else {
+      console.log("No such group!");
+    }
+  } catch (error) {
+    console.error("Error fetching group:", error);
+  }
+}
+
+async function getListHabitGroup() {
+  const today = getDay(new Date()) + 1;
+  const userSnapshot = await getDocs(
+    query(collection(db, "Users"), where("uid", "==", uid))
+  );
+  const groups = userSnapshot.docs[0].data().groups;
+  console.log(groups);
+  if (!groups || groups.length === 0) {
+    return null;
+  }
+
+  const habitSnapshot = await getDocs(
+    query(collection(db, "Habit"), where("gid", "in", groups))
+  );
+  if (!habitSnapshot) {
+    return null;
+  }
+  return habitSnapshot.docs
+    .map((doc) => {
+      const data = doc.data();
+      if (data.weekday.includes(today)) {
+        return {
+          habit_name: data.name,
+          description: data.description,
+          color: data.color,
+          habit_id: data.habit_id,
+          type: data.type,
+        };
+      }
+    })
+    .filter(Boolean);
+}
+
 export {
   getHabits,
   getHabitsname,
@@ -332,4 +397,6 @@ export {
   getUserById,
   getHabitById,
   updateUser,
+  updateGroup,
+  getListHabitGroup,
 };

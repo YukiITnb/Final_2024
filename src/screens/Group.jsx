@@ -211,7 +211,14 @@ export default function Group({ navigation, route }) {
               { flexDirection: "row", justifyContent: "space-between" },
             ]}
           >
-            <Linechartcpn selectedValue="n2j4mdw159r10hq2dta9ulf" week={week} />
+            {group && (
+              <Linechartcpn
+                selectedValue={
+                  group ? group.habit_id : "n2j4mdw159r10hq2dta9ulf"
+                }
+                week={week}
+              />
+            )}
           </View>
         </View>
 

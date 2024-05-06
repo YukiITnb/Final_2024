@@ -184,11 +184,17 @@ export default function CreateGroup({ navigation }) {
 
       <View style={styles.overlay}>
         <TouchableOpacity
-          onPress={() => {
-            createGroup(form);
+          onPress={async () => {
+            await createGroup(form);
             const updateData = { groups: arrayUnion(form.gid) };
-            updateUser(form.ownerId, updateData);
-            navigation.navigate("Group", { gid: form.gid });
+            await updateUser(form.ownerId, updateData);
+            navigation.reset({
+              index: 0,
+              routes: [
+                { name: "Tab" },
+                { name: "showGroup", params: { gid: form.gid } },
+              ],
+            });
           }}
           style={{ flex: 1, paddingHorizontal: 24 }}
         >

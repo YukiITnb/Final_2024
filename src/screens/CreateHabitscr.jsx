@@ -17,7 +17,7 @@ import { useProgressStore } from "../store/progressStore";
 
 import { db } from "../db/firestore";
 import { collection, getDocs, addDoc } from "firebase/firestore";
-import { set } from "date-fns";
+import { updateGroup } from "../db/services";
 
 const Weekday = [
   {
@@ -146,6 +146,8 @@ const CreateHabit = ({ navigation, route }) => {
       }
       await addDoc(repeatCollection, repeatData);
 
+      const gUpdateData = { flag: 1 };
+      await updateGroup(gid, gUpdateData);
       refreshData();
 
       navigation.goBack();

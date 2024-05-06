@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import React from "react";
 import { useState, useEffect } from "react";
-import { getHabits } from "../db/services";
+import { getHabits, getListHabitGroup } from "../db/services";
 
 import Headerbar from "../components/Headerbar";
 import ProgressComponent from "../components/ProgressBar";
@@ -21,6 +21,7 @@ import { useProgressStore } from "../store/progressStore";
 
 const Homescr = ({ navigation }) => {
   const [habits, setHabits] = useState([]);
+  const [ghabits, setGhabits] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const refresh = useProgressStore((state) => state.refresh);
   const [isModalVisible, setModalVisible] = useState(false);
@@ -40,6 +41,9 @@ const Homescr = ({ navigation }) => {
   useEffect(() => {
     getHabits().then((habitList) => {
       setHabits(habitList);
+    });
+    getListHabitGroup().then((habitList) => {
+      setGhabits(habitList);
       setIsLoading(false);
     });
   }, [refresh]);
@@ -86,7 +90,7 @@ const Homescr = ({ navigation }) => {
             style={{
               fontSize: 20,
               paddingBottom: 10,
-              textAlign: "center",
+              textAlign: "left",
               fontWeight: "bold",
               color: COLORS.primary,
             }}
@@ -95,11 +99,43 @@ const Homescr = ({ navigation }) => {
           </Text>
         </View>
       </View>
-      <View style={{ flex: 0.7 }}>
+      <View style={{ flex: 0.35, backgroundColor: "red" }}>
         <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
           {isLoading && <LoadingSpiner />}
           {!isLoading &&
             habits.map((habit, index) => (
+              <Habit
+                key={index}
+                habit_name={habit.habit_name}
+                description={habit.description}
+                color={habit.color}
+                navigation={navigation}
+                habit_id={habit.habit_id}
+                type={habit.type}
+              />
+            ))}
+        </ScrollView>
+      </View>
+      <View style={{ flex: 0.07 }}>
+        <View style={styles.containertext}>
+          <Text
+            style={{
+              fontSize: 20,
+              paddingBottom: 10,
+              textAlign: "left",
+              fontWeight: "bold",
+              color: COLORS.primary,
+            }}
+          >
+            Group habits
+          </Text>
+        </View>
+      </View>
+      <View style={{ flex: 0.25, backgroundColor: "red" }}>
+        <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
+          {isLoading && <LoadingSpiner />}
+          {!isLoading &&
+            ghabits.map((habit, index) => (
               <Habit
                 key={index}
                 habit_name={habit.habit_name}
