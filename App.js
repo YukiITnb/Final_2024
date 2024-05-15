@@ -10,6 +10,7 @@ import Loginscr from "./src/screens/Loginscr";
 import Signupscr from "./src/screens/Signupscr";
 import CreateGroup from "./src/screens/CreateGroup";
 import Group from "./src/screens/Group";
+import PostUpload from "./src/screens/PostUploadscr";
 import { useProgressStore } from "./src/store/progressStore";
 import * as SplashScreen from "expo-splash-screen";
 
@@ -78,6 +79,11 @@ export default function App() {
             <Stack.Screen
               name="showGroup"
               component={Group}
+              options={{ animation: "fade" }}
+            />
+            <Stack.Screen
+              name="PostUpload"
+              component={PostUpload}
               options={{ animation: "fade" }}
             />
           </>

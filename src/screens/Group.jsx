@@ -15,16 +15,18 @@ import { useProgressStore } from "../store/progressStore";
 import Linechartcpn from "../components/Linechart";
 import moment from "moment";
 import HabitTypeModal from "../components/HabitTypeModal";
+import Post from "../components/Post";
 import { arrayUnion } from "firebase/firestore";
 import {
   getGroupByGid,
   getUserById,
   getHabitById,
   updateUser,
+  updateGroup,
 } from "../db/services";
 
 export default function Group({ navigation, route }) {
-  const { gid } = route.params;
+  const { gid, owner, member } = route.params;
   const [group, setGroup] = useState(null);
   const [user, setUser] = useState(null);
   const [habit, setHabit] = useState(null);
@@ -91,25 +93,52 @@ export default function Group({ navigation, route }) {
                   <FeatherIcon color="#000" name="chevron-left" size={22} />
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  const updateData = { groups: arrayUnion(group.gid) };
-                  updateUser(uid, updateData);
-                }}
-              >
-                <View style={styles.action}>
-                  <View
-                    style={[
-                      styles.action,
-                      { backgroundColor: "#FFC0CB", width: 60 },
-                    ]}
+              <View style={styles.action}>
+                {member && <View />}
+                {owner && !member && (
+                  <TouchableOpacity
+                    onPress={() => {
+                      // Handle owner press event
+                    }}
                   >
-                    <Text style={{ color: "#fff", fontWeight: "bold" }}>
-                      Apply
-                    </Text>
-                  </View>
-                </View>
-              </TouchableOpacity>
+                    <View
+                      style={[
+                        styles.action,
+                        { backgroundColor: "#FFC0CB", width: 60 },
+                      ]}
+                    >
+                      <Text style={{ color: "#fff", fontWeight: "bold" }}>
+                        Setting
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                )}
+                {!owner && !member && (
+                  <TouchableOpacity
+                    onPress={() => {
+                      // Handle non-owner and non-member press event
+                      const updateData = { groups: arrayUnion(group.gid) };
+                      updateUser(uid, updateData);
+                      const updateData2 = {
+                        members: arrayUnion(user.uid),
+                        curMemNum: group.curMemNum + 1,
+                      };
+                      updateGroup(group.gid, updateData2);
+                    }}
+                  >
+                    <View
+                      style={[
+                        styles.action,
+                        { backgroundColor: "#FFC0CB", width: 60 },
+                      ]}
+                    >
+                      <Text style={{ color: "#fff", fontWeight: "bold" }}>
+                        Apply
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                )}
+              </View>
             </View>
           </SafeAreaView>
         </View>
@@ -230,24 +259,14 @@ export default function Group({ navigation, route }) {
                 See the activities of the group
               </Text>
             </View>
+            <TouchableOpacity
+              style={styles.sectionBadge}
+              onPress={() => navigation.navigate("PostUpload")}
+            >
+              <Text style={styles.sectionBadgeText}>Post</Text>
+            </TouchableOpacity>
           </View>
-
-          <FlatList
-            data={posts}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-              <View
-                style={{
-                  backgroundColor: "#fff",
-                  padding: 10,
-                  marginBottom: 10,
-                }}
-              >
-                <Text style={{ fontWeight: "bold" }}>{item.user}</Text>
-                <Text>{item.content}</Text>
-              </View>
-            )}
-          />
+          <Post />
         </View>
       </ScrollView>
       <HabitTypeModal

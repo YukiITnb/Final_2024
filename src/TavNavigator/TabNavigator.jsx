@@ -5,10 +5,8 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 import Homescr from "../screens/Homescr";
 import Statisticscr from "../screens/Statisticscr";
 import Calendarscr from "../screens/Calendarscr";
-import Settingscr from "../screens/Settingscr";
 import PickGroup from "../screens/PickGroupscr";
-import CreateGroup from "../screens/CreateGroup";
-import Group from "../screens/Group";
+import Mygroup from "../screens/MyGroupscr";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 const Tab = createBottomTabNavigator();
@@ -37,7 +35,7 @@ function TopTabsGroup() {
           tabBarLabel: "Pick Group",
         }}
       />
-      <TopTabs.Screen name="My Group" component={PickGroup} />
+      <TopTabs.Screen name="My Group" component={Mygroup} />
     </TopTabs.Navigator>
   );
 }

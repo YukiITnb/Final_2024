@@ -83,7 +83,6 @@ const Homescr = ({ navigation }) => {
           </Text>
         </View>
       </View>
-      <ProgressComponent />
       <View style={{ flex: 0.07 }}>
         <View style={styles.containertext}>
           <Text
@@ -99,10 +98,11 @@ const Homescr = ({ navigation }) => {
           </Text>
         </View>
       </View>
-      <View style={{ flex: 0.35, backgroundColor: "red" }}>
+      <View style={{ flex: 0.35 }}>
         <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
           {isLoading && <LoadingSpiner />}
           {!isLoading &&
+            habits.length > 0 &&
             habits.map((habit, index) => (
               <Habit
                 key={index}
@@ -114,6 +114,9 @@ const Homescr = ({ navigation }) => {
                 type={habit.type}
               />
             ))}
+          {!isLoading && habits.length === 0 && (
+            <Text>Hãy tạo một habit mới ngay thôi nào!</Text>
+          )}
         </ScrollView>
       </View>
       <View style={{ flex: 0.07 }}>
@@ -131,7 +134,7 @@ const Homescr = ({ navigation }) => {
           </Text>
         </View>
       </View>
-      <View style={{ flex: 0.25, backgroundColor: "red" }}>
+      <View style={{ flex: 0.25 }}>
         <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
           {isLoading && <LoadingSpiner />}
           {!isLoading &&

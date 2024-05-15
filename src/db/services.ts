@@ -154,13 +154,42 @@ async function getGroups() {
     return groupSnapshot.docs
       .map((doc) => {
         const data = doc.data();
-        if (data.flag === 1) {
+        if (
+          data.flag === 1 &&
+          data.curMemNum < data.maxMemNum &&
+          data.ownerId !== uid &&
+          data.members.includes(uid) === false
+        ) {
           return {
             gname: data.gname,
             curMemNum: data.curMemNum,
             maxMemNum: data.maxMemNum,
             description: data.description,
             gid: data.gid,
+          };
+        }
+      })
+      .filter(Boolean);
+  } catch (error) {
+    console.error("Error fetching groupList:", error);
+  }
+}
+
+async function getMyGroups() {
+  try {
+    const groupSnapshot = await getCollectionDocsNoID("Group");
+    return groupSnapshot.docs
+      .map((doc) => {
+        const data = doc.data();
+        if (data.ownerId == uid || data.members.includes(uid) === true) {
+          return {
+            gname: data.gname,
+            curMemNum: data.curMemNum,
+            maxMemNum: data.maxMemNum,
+            description: data.description,
+            gid: data.gid,
+            owner: data.ownerId == uid,
+            member: data.members.includes(uid),
           };
         }
       })
@@ -283,6 +312,7 @@ async function getUserById(uid) {
       const data = userSnapshot.docs[0].data();
       return {
         userName: data.userName,
+        uid: data.uid,
       };
     } else {
       console.log("No such group!");
@@ -388,6 +418,7 @@ export {
   fetchTodayRepeats,
   userSignUp,
   getGroups,
+  getMyGroups,
   updateHabit,
   updateHabitRepeat,
   deleteHabit,

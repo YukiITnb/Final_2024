@@ -10,6 +10,18 @@ const COLORS = {
   lightWhite: "#FAFAFC",
 
   lightPink: "#FFB6C1",
+
+  primaryColor: "#1877F2",
+  black: "#000000",
+  grey: "#3A3A3A",
+  lightgrey: "#EBECF0",
+  borderGrey: "#BEBEBE",
+  green: "#45bd62",
+  background: "#c9ccd1",
+  storyImageBg: "#f0f1f2",
+  textColor: "#26282b",
+  textGrey: "#989FA7",
+  headerIconGrey: "#606770",
 };
 
 const SIZES = {
@@ -45,24 +57,24 @@ const SHADOWS = {
 };
 
 const PastelColors = [
-  '#B8E1FF',
-  '#CED1E6',
-  '#F5FCFF',
-  '#88F9F9',
-  '#D5BDD5',
-  '#BFABDC',
-  '#EEDCCE',
-  '#FEAFA2',
-  '#33658A',
-  '#ECA6CA',
-  '#FFDCE3',
-  '#838BED',
-  '#F9E8E2',
-  '#FFD8B9',
-  '#B1CAE9',
-  '#06A9AE',
-  '#B12051',
-  '#011F82',
+  "#B8E1FF",
+  "#CED1E6",
+  "#F5FCFF",
+  "#88F9F9",
+  "#D5BDD5",
+  "#BFABDC",
+  "#EEDCCE",
+  "#FEAFA2",
+  "#33658A",
+  "#ECA6CA",
+  "#FFDCE3",
+  "#838BED",
+  "#F9E8E2",
+  "#FFD8B9",
+  "#B1CAE9",
+  "#06A9AE",
+  "#B12051",
+  "#011F82",
 ];
 
 export { COLORS, SIZES, SHADOWS, PastelColors };

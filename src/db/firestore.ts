@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
-import {getAuth} from "firebase/auth";
-import {getFirestore} from "firebase/firestore";
+import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: "AIzaSyD6eTm0Avu_KYRyk0gXcWtxNTMNPtdUjnQ",
@@ -9,7 +10,7 @@ const firebaseConfig = {
   storageBucket: "habit-tracker-pj.appspot.com",
   messagingSenderId: "502134493999",
   appId: "1:502134493999:web:a422b1c70fe43a5a17c7da",
-  measurementId: "G-HBYYDNW3G4"
+  measurementId: "G-HBYYDNW3G4",
 };
 
 // Initialize Firebase
@@ -19,4 +20,6 @@ const auth = getAuth(app);
 
 const db = getFirestore();
 
-export {auth,db};
+const storage = getStorage();
+
+export { auth, db, storage };
