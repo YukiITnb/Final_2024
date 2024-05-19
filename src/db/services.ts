@@ -9,6 +9,7 @@ import {
   updateDoc,
   deleteDoc,
   getDoc,
+  orderBy,
 } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { getDay, format } from "date-fns";
@@ -311,8 +312,10 @@ async function getUserById(uid) {
     if (!userSnapshot.empty) {
       const data = userSnapshot.docs[0].data();
       return {
-        userName: data.userName,
         uid: data.uid,
+        userName: data.userName,
+        avatar: data.avatar,
+        groups: data.groups,
       };
     } else {
       console.log("No such group!");
@@ -411,6 +414,58 @@ async function getListHabitGroup() {
     .filter(Boolean);
 }
 
+async function createPost(post) {
+  try {
+    const docRef = await addDoc(collection(db, "Posts"), post);
+    console.log("Document written with ID: ", docRef.id);
+  } catch (e) {
+    console.error("Error adding document: ", e);
+  }
+}
+
+async function getPostByGid(gid) {
+  try {
+    const postQuery = query(collection(db, "Posts"), where("gid", "==", gid));
+    const postSnapshot = await getDocs(postQuery);
+
+    if (!postSnapshot.empty) {
+      return postSnapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          content: data.content,
+          gid: data.gid,
+          imageUrl: data.imageUrl,
+          pid: data.pid,
+          timestamp: data.timestamp,
+          uid: data.uid,
+          comments: data.comments,
+          reaction: data.reaction,
+        };
+      });
+    } else {
+      console.log("No such post!");
+    }
+  } catch (error) {
+    console.error("Error fetching post:", error);
+  }
+}
+
+async function updatePost(pid, updatedData) {
+  try {
+    const postQuery = query(collection(db, "Posts"), where("pid", "==", pid));
+    const postSnapshot = await getDocs(postQuery);
+    if (!postSnapshot.empty) {
+      const postDoc = postSnapshot.docs[0];
+      await updateDoc(postDoc.ref, updatedData);
+      console.log("post updated successfully");
+    } else {
+      console.log("No such post!");
+    }
+  } catch (error) {
+    console.error("Error updating post:", error);
+  }
+}
+
 export {
   getHabits,
   getHabitsname,
@@ -430,4 +485,7 @@ export {
   updateUser,
   updateGroup,
   getListHabitGroup,
+  createPost,
+  getPostByGid,
+  updatePost,
 };

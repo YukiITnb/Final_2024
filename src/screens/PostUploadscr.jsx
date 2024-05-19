@@ -12,14 +12,33 @@ import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
 import { storage } from "../db/firestore";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createPost, getUserById } from "../db/services";
 import React from "react";
 
-const PostUpload = () => {
+const PostUpload = ({ navigation, route }) => {
+  const { uid, gid } = route.params;
   const [image, setImage] = useState(null);
   const [uploading, setUploading] = useState(false);
-  const [downloadURL, setDownloadURL] = useState(null);
   const [content, setContent] = useState("");
+  const [post, setPost] = useState({
+    content: "",
+    uid: uid,
+    gid: gid,
+    pid:
+      Math.random().toString(36).substring(2, 15) +
+      Math.random().toString(36).substring(2, 15),
+    timestamp: new Date().getTime(),
+    comments: 0,
+    reaction: 0,
+  });
+  const [user, setUser] = useState({});
+
+  useEffect(() => {
+    getUserById(uid).then((userData) => {
+      setUser(userData);
+    });
+  }, []);
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -34,7 +53,7 @@ const PostUpload = () => {
     }
   };
 
-  const uploadImage = async () => {
+  const uploadPost = async () => {
     setUploading(true);
     try {
       const { uri } = await FileSystem.getInfoAsync(image);
@@ -75,10 +94,18 @@ const PostUpload = () => {
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then((url) => {
             console.log("File available at", url);
-            setDownloadURL(url);
-            setUploading(false);
-            alert("Image uploaded");
             setImage(null);
+            setPost((prevPost) => {
+              const updatedPost = {
+                ...prevPost,
+                content: content,
+                imageUrl: url,
+              };
+              createPost(updatedPost);
+            });
+            setUploading(false);
+            navigation.goBack();
+            alert("Post uploaded");
           });
         }
       );
@@ -87,21 +114,6 @@ const PostUpload = () => {
     }
   };
   return (
-    // // <SafeAreaView style={styles.container}>
-    //   <View style={styles.imageContainer}>
-    //     {image && <Image source={{ uri: image }} style={styles.image} />}
-    //   </View>
-    //   <TouchableOpacity style={styles.button} onPress={pickImage}>
-    //     <Text style={styles.buttonText}>Pick an image</Text>
-    //   </TouchableOpacity>
-    //   <TouchableOpacity
-    //     style={styles.button}
-    //     onPress={uploadImage}
-    //     disabled={!image}
-    //   >
-    //     <Text style={styles.buttonText}>Upload image</Text>
-    //   </TouchableOpacity>
-    // // </SafeAreaView>
     <SafeAreaView style={{ padding: 10 }}>
       <View
         style={{
@@ -119,11 +131,11 @@ const PostUpload = () => {
             resizeMode: "contain",
           }}
           source={{
-            uri: "https://cdn-icons-png.flaticon.com/128/149/149071.png",
+            uri: user.avatar,
           }}
         />
 
-        <Text>Sujan_Music</Text>
+        <Text>{user.userName}</Text>
       </View>
 
       <View style={{ flexDirection: "row", marginLeft: 10 }}>
@@ -144,10 +156,10 @@ const PostUpload = () => {
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.button}
-        onPress={uploadImage}
+        onPress={uploadPost}
         disabled={!image}
       >
-        <Text style={styles.buttonText}>Upload image</Text>
+        <Text style={styles.buttonText}>Save post</Text>
       </TouchableOpacity>
       <View style={{ marginTop: 20 }} />
     </SafeAreaView>

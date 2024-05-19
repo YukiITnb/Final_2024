@@ -12,6 +12,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { auth } from "../db/firestore";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useProgressStore } from "../store/progressStore";
+import { getUserById } from "../db/services";
 
 export default function Loginscr({ navigation }) {
   const [form, setForm] = useState({
@@ -23,6 +24,7 @@ export default function Loginscr({ navigation }) {
     (state) => state.setIsAuthenticated
   );
   const setUid = useProgressStore((state) => state.setUid);
+  const setUserData = useProgressStore((state) => state.setUser);
 
   const handleLogin = async () => {
     try {
@@ -33,6 +35,8 @@ export default function Loginscr({ navigation }) {
       );
       const user = userCredential.user;
       setUid(user.uid);
+      const userData = await getUserById(user.uid);
+      setUserData(userData);
       setIsAuthenticated(true);
     } catch (error) {
       console.error(error);

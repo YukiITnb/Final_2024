@@ -11,7 +11,6 @@ import { useState, useEffect } from "react";
 import { getHabits, getListHabitGroup } from "../db/services";
 
 import Headerbar from "../components/Headerbar";
-import ProgressComponent from "../components/ProgressBar";
 import Habit from "../components/Habit";
 import LoadingSpiner from "../components/LoadingSpiner";
 import HabitTypeModal from "../components/HabitTypeModal";
@@ -25,6 +24,7 @@ const Homescr = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(true);
   const refresh = useProgressStore((state) => state.refresh);
   const [isModalVisible, setModalVisible] = useState(false);
+  const user = useProgressStore((state) => state.user);
 
   const handleOpenModal = () => {
     setModalVisible(true);
@@ -48,21 +48,17 @@ const Homescr = ({ navigation }) => {
     });
   }, [refresh]);
 
-  const increaseProgress = useProgressStore((state) => state.increaseProgress);
-  const resetProgress = useProgressStore((state) => state.resetProgress);
-
   return (
     <View style={styles.container}>
       <StatusBar />
       <View style={styles.headbar}>
         <Headerbar
-          iconUrl={images.profile}
+          iconUrl={user.avatar ? { uri: user.avatar } : images.avatar}
           dimension="100%"
           handlePress={() => {}}
         />
         <View style={{ flex: 1 }}>
-          <Text style={styles.headertext}>Yuki</Text>
-          <Text style={styles.headertext}>Lv 12</Text>
+          <Text style={styles.headertext}>{user.userName}</Text>
         </View>
         <Headerbar
           iconUrl={icons.heartOutline}
@@ -77,7 +73,7 @@ const Homescr = ({ navigation }) => {
       </View>
       <View style={{ flex: 0.15 }}>
         <View style={styles.containertext}>
-          <Text style={styles.userName}>Hello Yuki</Text>
+          <Text style={styles.userName}>Hello {user.userName}</Text>
           <Text style={styles.welcomeMessage}>
             See your Progress today here
           </Text>

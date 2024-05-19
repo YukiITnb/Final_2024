@@ -261,12 +261,14 @@ export default function Group({ navigation, route }) {
             </View>
             <TouchableOpacity
               style={styles.sectionBadge}
-              onPress={() => navigation.navigate("PostUpload")}
+              onPress={() =>
+                navigation.navigate("PostUpload", { uid: uid, gid: gid })
+              }
             >
               <Text style={styles.sectionBadgeText}>Post</Text>
             </TouchableOpacity>
           </View>
-          <Post />
+          <Post gid={gid} />
         </View>
       </ScrollView>
       <HabitTypeModal

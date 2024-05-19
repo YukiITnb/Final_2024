@@ -2,22 +2,33 @@ import { View, Image, StyleSheet, Text } from "react-native";
 import React from "react";
 import { COLORS } from "../constants/theme";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { getUserById } from "../db/services";
+import { useState, useEffect } from "react";
+import { formatDistanceToNow } from "date-fns";
 
 const PostHeader = ({ data }) => {
+  const date = new Date(data.timestamp);
+  const timeAgo = formatDistanceToNow(date, { addSuffix: true });
+  const [user, setUser] = useState({});
+  useEffect(() => {
+    getUserById(data.uid).then((userData) => {
+      setUser(userData);
+    });
+  }, []);
   return (
     <View style={styles.postHeaderContainer}>
       <View style={styles.postTopSec}>
         <View style={styles.row}>
           <Image
             source={{
-              uri: data.profileImg,
+              uri: user.avatar,
             }}
             style={styles.userProfile}
           />
           <View style={styles.userSection}>
-            <Text style={styles.username}>{data.name}</Text>
+            <Text style={styles.username}>{user.userName}</Text>
             <View style={styles.row}>
-              <Text style={styles.days}>{data.date}</Text>
+              <Text style={styles.days}>{timeAgo}</Text>
               <Text style={styles.dot}>•</Text>
               <MaterialCommunityIcons
                 name="account-multiple"
@@ -43,7 +54,7 @@ const PostHeader = ({ data }) => {
           />
         </View>
       </View>
-      <Text style={styles.caption}>{data.caption}</Text>
+      <Text style={styles.caption}>{data.content}</Text>
     </View>
   );
 };
