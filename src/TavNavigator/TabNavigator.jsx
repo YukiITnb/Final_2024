@@ -7,6 +7,7 @@ import Statisticscr from "../screens/Statisticscr";
 import Calendarscr from "../screens/Calendarscr";
 import PickGroup from "../screens/PickGroupscr";
 import Mygroup from "../screens/MyGroupscr";
+import Friend from "../screens/Friend";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 const Tab = createBottomTabNavigator();
@@ -144,6 +145,29 @@ const TabNavigator = () => {
                 size={size}
               />
               <Text style={{ fontSize: 12, color: "#16247d" }}>Group</Text>
+            </View>
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Friend"
+        component={Friend}
+        options={{
+          tabBarLabel: "Friend",
+          tabBarIcon: ({ color, size }) => (
+            <View
+              style={{
+                alignItems: "center",
+                justifyContent: "center",
+                top: 10,
+              }}
+            >
+              <MaterialCommunityIcons
+                name="account-multiple"
+                color={color}
+                size={size}
+              />
+              <Text style={{ fontSize: 12, color: "#16247d" }}>Friend</Text>
             </View>
           ),
         }}

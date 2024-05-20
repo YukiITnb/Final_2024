@@ -12,6 +12,8 @@ import CreateGroup from "./src/screens/CreateGroup";
 import Group from "./src/screens/Group";
 import PostUpload from "./src/screens/PostUploadscr";
 import CommentScreen from "./src/screens/Commentscr";
+import Friend from "./src/screens/Friend";
+import Chat from "./src/screens/Chatscr";
 import { useProgressStore } from "./src/store/progressStore";
 import * as SplashScreen from "expo-splash-screen";
 
@@ -90,6 +92,16 @@ export default function App() {
             <Stack.Screen
               name="Comments"
               component={CommentScreen}
+              options={{ animation: "fade" }}
+            />
+            <Stack.Screen
+              name="Friend"
+              component={Friend}
+              options={{ animation: "fade" }}
+            />
+            <Stack.Screen
+              name="Chat"
+              component={Chat}
               options={{ animation: "fade" }}
             />
           </>

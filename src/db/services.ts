@@ -466,6 +466,32 @@ async function updatePost(pid, updatedData) {
   }
 }
 
+async function getFriendsByUid(uid) {
+  try {
+    const friendsQuery1 = query(
+      collection(db, "Friend"),
+      where("uid1", "==", uid)
+    );
+    const friendsQuery2 = query(
+      collection(db, "Friend"),
+      where("uid2", "==", uid)
+    );
+    const friendsSnapshot1 = await getDocs(friendsQuery1);
+    const friendsSnapshot2 = await getDocs(friendsQuery2);
+    const friends = [];
+    if (!friendsSnapshot1.empty) {
+      friends.push(...friendsSnapshot1.docs.map((doc) => doc.data()));
+    }
+    if (!friendsSnapshot2.empty) {
+      friends.push(...friendsSnapshot2.docs.map((doc) => doc.data()));
+    }
+    return friends;
+  } catch (error) {
+    console.error("Error fetching friends:", error);
+    return [];
+  }
+}
+
 export {
   getHabits,
   getHabitsname,
@@ -488,4 +514,5 @@ export {
   createPost,
   getPostByGid,
   updatePost,
+  getFriendsByUid,
 };
