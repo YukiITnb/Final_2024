@@ -10,6 +10,7 @@ import {
   onSnapshot,
   or,
   orderBy,
+  and,
 } from "firebase/firestore";
 import { useEffect, useState, useCallback } from "react";
 import { GiftedChat } from "react-native-gifted-chat";
@@ -23,14 +24,20 @@ const Chat = ({ route }) => {
     const unsubscribe = onSnapshot(
       query(
         collection(db, "Message"),
-        or(where("receiverId", "==", uid), where("senderId", "==", uid)),
+        or(
+          and(
+            where("receiverId", "==", uid),
+            where("senderId", "==", otherUid)
+          ),
+          and(where("receiverId", "==", otherUid), where("senderId", "==", uid))
+        ),
         orderBy("createdAt", "desc")
       ),
       (snapshot) => {
         const messages = snapshot.docs.map((doc) => {
           const message = doc.data();
           return {
-            _id: doc._id,
+            _id: message._id,
             text: message.text,
             createdAt: message.createdAt.toDate(),
             user: message.user,
