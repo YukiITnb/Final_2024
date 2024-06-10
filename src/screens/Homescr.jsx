@@ -39,6 +39,8 @@ const Homescr = ({ navigation }) => {
   );
 
   useEffect(() => {
+    setHabits([]);
+    setGhabits([]);
     getHabits().then((habitList) => {
       setHabits(habitList);
     });
@@ -55,7 +57,9 @@ const Homescr = ({ navigation }) => {
         <Headerbar
           iconUrl={user.avatar ? { uri: user.avatar } : images.avatar}
           dimension="100%"
-          handlePress={() => {}}
+          handlePress={() => {
+            navigation.navigate("PersonalProfile");
+          }}
         />
         <View style={{ flex: 1 }}>
           <Text style={styles.headertext}>{user.userName}</Text>
@@ -108,6 +112,7 @@ const Homescr = ({ navigation }) => {
                 navigation={navigation}
                 habit_id={habit.habit_id}
                 type={habit.type}
+                isGroup={false}
               />
             ))}
           {!isLoading && habits.length === 0 && (
@@ -143,8 +148,15 @@ const Homescr = ({ navigation }) => {
                 navigation={navigation}
                 habit_id={habit.habit_id}
                 type={habit.type}
+                isGroup={true}
               />
             ))}
+          {!isLoading && ghabits.length === 0 && (
+            <Text>
+              Hãy gia nhập 1 nhóm để gặp những người cùng mục tiêu cùng nhau cố
+              gắng nào!
+            </Text>
+          )}
         </ScrollView>
       </View>
       <HabitTypeModal

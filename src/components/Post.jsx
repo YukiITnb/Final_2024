@@ -15,20 +15,22 @@ const Post = ({ gid }) => {
   }, []);
   return (
     <View style={styles.postContainer}>
-      {posts
-        .sort((a, b) => b.timestamp - a.timestamp)
-        .map((item) => (
-          <View key={item.timestamp}>
-            <PostHeader data={item} />
-            <Image
-              source={{
-                uri: item.imageUrl,
-              }}
-              style={styles.postImg}
-            />
-            <PostFooter data={item} />
-          </View>
-        ))}
+      {posts &&
+        posts.length > 0 &&
+        posts
+          .sort((a, b) => b.timestamp - a.timestamp)
+          .map((item) => (
+            <View key={item.timestamp}>
+              <PostHeader data={item} />
+              <Image
+                source={{
+                  uri: item.imageUrl,
+                }}
+                style={styles.postImg}
+              />
+              <PostFooter data={item} />
+            </View>
+          ))}
     </View>
   );
 };

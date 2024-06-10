@@ -113,6 +113,24 @@ export default function Group({ navigation, route }) {
                     </View>
                   </TouchableOpacity>
                 )}
+                {!owner && member && (
+                  <TouchableOpacity
+                    onPress={() => {
+                      // Handle member press event
+                    }}
+                  >
+                    <View
+                      style={[
+                        styles.action,
+                        { backgroundColor: "#FFC0CB", width: 60 },
+                      ]}
+                    >
+                      <Text style={{ color: "#fff", fontWeight: "bold" }}>
+                        Leave
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                )}
                 {!owner && !member && (
                   <TouchableOpacity
                     onPress={() => {

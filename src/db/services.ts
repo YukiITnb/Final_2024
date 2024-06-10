@@ -264,8 +264,8 @@ async function updateHabitRepeat(habit_id, updatedData) {
 
 async function deleteHabit(habit_id) {
   try {
-    const habitDoc = doc(db, "Habit", habit_id);
-    await deleteDoc(habitDoc);
+    const habitDoc = await getHabitDoc(habit_id);
+    await deleteDoc(habitDoc.ref);
     console.log("Habit deleted successfully");
   } catch (error) {
     console.error("Error deleting habit:", error);

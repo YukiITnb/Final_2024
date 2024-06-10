@@ -6,7 +6,7 @@ import { icons } from "../constants";
 import { db } from "../db/firestore";
 import { collection, getDocs, where, query } from "firebase/firestore";
 import { useProgressStore } from "../store/progressStore";
-import { ModalYN, ModalMS } from "./Modal";
+import { ModalYN, ModalMS, ModalEdit } from "./Modal";
 
 const Habit = ({
   habit_name,
@@ -15,6 +15,7 @@ const Habit = ({
   navigation,
   habit_id,
   type,
+  isGroup,
 }) => {
   const [progress, setProgress] = useState(0);
   const [timeSpent, setTimeSpent] = useState(0);
@@ -29,6 +30,7 @@ const Habit = ({
   }_${today.getFullYear()}`;
 
   const [isModalVisible, setModalVisible] = useState(false);
+  const [isModalVisibleLongPress, setModalVisibleLongPress] = useState(false);
 
   const handleOpenModal = () => {
     setModalVisible(true);
@@ -36,6 +38,14 @@ const Habit = ({
 
   const handleCloseModal = () => {
     setModalVisible(false);
+  };
+
+  const handleOpenModalLongPress = () => {
+    setModalVisibleLongPress(true);
+  };
+
+  const handleCloseModalLongPress = () => {
+    setModalVisibleLongPress(false);
   };
 
   useEffect(() => {
@@ -103,8 +113,14 @@ const Habit = ({
     }
   };
 
+  const handleLongPress = () => {
+    if (!isGroup) {
+      handleOpenModalLongPress();
+    }
+  };
+
   return (
-    <TouchableOpacity onPress={handlePress}>
+    <TouchableOpacity onPress={handlePress} onLongPress={handleLongPress}>
       <View style={[styles.container, { borderColor: color }]}>
         <Image source={iconUrl} style={styles.icon} />
         <View style={styles.textContainer}>
@@ -144,6 +160,14 @@ const Habit = ({
             </>
           )}
         </View>
+        {isGroup == false && (
+          <ModalEdit
+            visible={isModalVisibleLongPress}
+            onRequestClose={handleCloseModalLongPress}
+            habit_id={habit_id}
+            type={type}
+          />
+        )}
       </View>
     </TouchableOpacity>
   );

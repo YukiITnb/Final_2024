@@ -9,6 +9,7 @@ import {
 import React, { useState } from "react";
 import { useProgressStore } from "../store/progressStore";
 import { updateHabitRepeat, deleteHabit } from "../db/services";
+import { useNavigation } from "@react-navigation/native";
 
 export const ModalYN = ({ visible, onRequestClose, habit_id }) => {
   const setRefresh = useProgressStore((state) => state.setRefresh);
@@ -116,12 +117,73 @@ export const ModalMS = ({ visible, onRequestClose, habit_id, target }) => {
                 onChangeText={setInputValue}
                 value={inputValue}
                 placeholder="Enter value"
+                color="white"
               />
               <TouchableOpacity
                 style={styles.button1}
                 onPress={handlePressModal}
               >
                 <Text style={styles.buttonText}>Confirm</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </TouchableOpacity>
+    </Modal>
+  );
+};
+
+export const ModalEdit = ({ visible, onRequestClose, habit_id, type }) => {
+  const setRefresh = useProgressStore((state) => state.setRefresh);
+  const refreshData = () => {
+    setRefresh((prevRefresh) => !prevRefresh);
+  };
+  const navigation = useNavigation();
+  const handlePressModal1 = async () => {
+    onRequestClose();
+    navigation.navigate("UpdateHabit", { habitType: type, habit_id: habit_id });
+  };
+
+  const handlePressModal2 = async () => {
+    await deleteHabit(habit_id);
+    onRequestClose();
+    refreshData();
+  };
+
+  return (
+    <Modal
+      animationType="fade"
+      transparent={true}
+      visible={visible}
+      onRequestClose={onRequestClose}
+    >
+      <TouchableOpacity
+        style={styles.container}
+        activeOpacity={1}
+        onPress={onRequestClose}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.buttonText}>Edit Habit</Text>
+            <View
+              style={{
+                flexDirection: "row",
+                paddingLeft: 20,
+                paddingRight: 20,
+                marginTop: 20,
+              }}
+            >
+              <TouchableOpacity
+                style={styles.button1}
+                onPress={handlePressModal1}
+              >
+                <Text style={styles.buttonText}>Edit</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.button1}
+                onPress={handlePressModal2}
+              >
+                <Text style={styles.buttonText}>Delete</Text>
               </TouchableOpacity>
             </View>
           </View>
