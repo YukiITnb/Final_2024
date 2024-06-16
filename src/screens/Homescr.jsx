@@ -63,6 +63,7 @@ const Homescr = ({ navigation }) => {
         />
         <View style={{ flex: 1 }}>
           <Text style={styles.headertext}>{user.userName}</Text>
+          <Text style={styles.headertext}>Points: {user.points}</Text>
         </View>
         <Headerbar
           iconUrl={icons.heartOutline}

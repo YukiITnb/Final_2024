@@ -14,6 +14,7 @@ export const useProgressStore = create(
         userName: "",
         avatar: "",
         groups: [],
+        points: 0,
       },
       setUser: (user) => set({ user }),
       setToday: (today) => set({ today }),

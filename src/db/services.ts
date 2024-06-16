@@ -316,6 +316,7 @@ async function getUserById(uid) {
         userName: data.userName,
         avatar: data.avatar,
         groups: data.groups,
+        points: data.points,
       };
     } else {
       console.log("No such group!");

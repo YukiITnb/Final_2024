@@ -20,7 +20,9 @@ export default function PersonalProfile() {
     pushNotifications: false,
   });
   const user = useProgressStore((state) => state.user);
-  console.log(user);
+  const setIsAuthenticated = useProgressStore(
+    (state) => state.setIsAuthenticated
+  );
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#f8f8f8" }}>
@@ -124,6 +126,22 @@ export default function PersonalProfile() {
                     value={form.pushNotifications}
                   />
                 </View>
+              </View>
+              <View style={styles.rowWrapper}>
+                <TouchableOpacity
+                  style={styles.row}
+                  onPress={() => setIsAuthenticated(false)}
+                >
+                  <Text style={styles.rowLabel}>Logout</Text>
+
+                  <View style={styles.rowSpacer} />
+
+                  <MaterialCommunityIcons
+                    color="#C6C6C6"
+                    name="chevron-right"
+                    size={20}
+                  />
+                </TouchableOpacity>
               </View>
             </View>
           </View>

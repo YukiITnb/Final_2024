@@ -48,6 +48,7 @@ export default function Signupscr({ navigation }) {
       navigation.navigate("Login");
     } catch (error) {
       console.error(error);
+      Alert.alert("Error", error.message);
     }
   };
   return (

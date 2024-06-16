@@ -38,8 +38,10 @@ export default function Loginscr({ navigation }) {
       const userData = await getUserById(user.uid);
       setUserData(userData);
       setIsAuthenticated(true);
+      alert("Đăng nhập thành công!");
     } catch (error) {
       console.error(error);
+      alert("Đăng nhập thất bại: " + error.message);
     }
   };
   return (
