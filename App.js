@@ -16,8 +16,10 @@ import Friend from "./src/screens/Friend";
 import Chat from "./src/screens/Chatscr";
 import PersonalProfile from "./src/screens/PersonalProfilescr";
 import UpdateHabit from "./src/screens/UpdateHabitscr";
+import Rank from "./src/screens/Rankscr";
 import { useProgressStore } from "./src/store/progressStore";
 import * as SplashScreen from "expo-splash-screen";
+import { images } from "./src/constants";
 
 const Stack = createNativeStackNavigator();
 SplashScreen.preventAutoHideAsync();
@@ -114,6 +116,11 @@ export default function App() {
             <Stack.Screen
               name="UpdateHabit"
               component={UpdateHabit}
+              options={{ animation: "fade" }}
+            />
+            <Stack.Screen
+              name="Rank"
+              component={Rank}
               options={{ animation: "fade" }}
             />
           </>

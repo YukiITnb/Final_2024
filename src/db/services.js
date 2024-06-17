@@ -216,6 +216,7 @@ async function getGroupByGid(gid) {
         gid: data.gid,
         habit_id: data.habit_id,
         flag: data.flag,
+        members: data.members,
       };
     } else {
       console.log("No such group!");
@@ -339,6 +340,7 @@ async function getHabitById(habit_id) {
       return {
         name: data.name,
         description: data.description,
+        data: data,
       };
     } else {
       console.log("No such group!");
@@ -493,6 +495,49 @@ async function getFriendsByUid(uid) {
   }
 }
 
+async function createHabit(habitData) {
+  try {
+    const habitCollection = collection(db, "Habit");
+    const docRef = await addDoc(habitCollection, habitData);
+    const repeatCollection = collection(docRef, "repeat");
+    const day = new Date();
+    const today = `${day.getDate()}_${day.getMonth() + 1}_${day.getFullYear()}`;
+    let repeatData = {
+      day: today,
+    };
+    if (habitData.habitType === "CountingTime") {
+      repeatData = {
+        ...repeatData,
+        break_time: 0,
+        complete: false,
+        progress: 0,
+        time:
+          (parseInt(habitData.hours) * 60 + parseInt(habitData.minutes)) * 60,
+        time_remain:
+          (parseInt(habitData.hours) * 60 + parseInt(habitData.minutes)) * 60,
+      };
+    } else if (habitData.habitType === "Measure") {
+      repeatData = {
+        ...repeatData,
+        progress: 0,
+        target: habitData.target,
+        done: 0,
+        unit: habitData.unit,
+      };
+    } else if (habitData.habitType === "YN") {
+      repeatData = {
+        ...repeatData,
+        progress: 0,
+        isCompleted: false,
+      };
+    }
+    await addDoc(repeatCollection, repeatData);
+    console.log("Habit created with ID: ", docRef.id);
+  } catch (e) {
+    console.error("Error adding document: ", e);
+  }
+}
+
 export {
   getHabits,
   getHabitsname,
@@ -516,4 +561,5 @@ export {
   getPostByGid,
   updatePost,
   getFriendsByUid,
+  createHabit,
 };

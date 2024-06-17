@@ -85,7 +85,6 @@ export default function PickGroup({ navigation }) {
     }
     return rows.sort((a, b) => a.index - b.index);
   }, [input, isGroupsLoaded]);
-  console.log(filteredRows);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fafafa" }}>

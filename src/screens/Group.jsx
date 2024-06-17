@@ -23,6 +23,7 @@ import {
   getHabitById,
   updateUser,
   updateGroup,
+  createHabit,
 } from "../db/services";
 
 export default function Group({ navigation, route }) {
@@ -57,12 +58,6 @@ export default function Group({ navigation, route }) {
   const handleCloseModal = () => {
     setModalVisible(false);
   };
-
-  const posts = [
-    { id: "1", user: "User 1", content: "This is the content of the post 1" },
-    { id: "2", user: "User 2", content: "This is the content of the post 2" },
-    // Add more posts here
-  ];
 
   const week = useMemo(() => {
     const start = moment().startOf("week").add(1, "day");
@@ -117,6 +112,13 @@ export default function Group({ navigation, route }) {
                   <TouchableOpacity
                     onPress={() => {
                       // Handle member press event
+                      const updateData = { groups: arrayRemove(group.gid) };
+                      updateUser(uid, updateData);
+                      const updateData2 = {
+                        members: arrayRemove(user.uid),
+                        curMemNum: group.curMemNum - 1,
+                      };
+                      updateGroup(group.gid, updateData2);
                     }}
                   >
                     <View
@@ -142,6 +144,10 @@ export default function Group({ navigation, route }) {
                         curMemNum: group.curMemNum + 1,
                       };
                       updateGroup(group.gid, updateData2);
+
+                      const newHabit = { ...habit.data, uid: uid };
+                      createHabit(newHabit);
+                      alert("You have joined the group successfully!");
                     }}
                   >
                     <View
@@ -245,6 +251,30 @@ export default function Group({ navigation, route }) {
             </View>
           </View>
         )}
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <View>
+              <Text style={styles.sectionTitle}>Group habit</Text>
+            </View>
+          </View>
+
+          <View
+            style={[
+              styles.sectionOptions,
+              { flexDirection: "row", justifyContent: "space-between" },
+            ]}
+          >
+            <Text>Xem bảng xêp hạng</Text>
+            <TouchableOpacity
+              style={[styles.btn, { width: "30%" }]}
+              onPress={() => {
+                navigation.navigate("Rank", { group: group });
+              }}
+            >
+              <Text style={styles.radioLabel}>Xem</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <View>

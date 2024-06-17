@@ -103,7 +103,7 @@ const Homescr = ({ navigation }) => {
         <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
           {isLoading && <LoadingSpiner />}
           {!isLoading &&
-            habits.length > 0 &&
+            habits?.length > 0 &&
             habits.map((habit, index) => (
               <Habit
                 key={index}
@@ -116,7 +116,7 @@ const Homescr = ({ navigation }) => {
                 isGroup={false}
               />
             ))}
-          {!isLoading && habits.length === 0 && (
+          {!isLoading && habits?.length === 0 && (
             <Text>Hãy tạo một habit mới ngay thôi nào!</Text>
           )}
         </ScrollView>
@@ -140,6 +140,7 @@ const Homescr = ({ navigation }) => {
         <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
           {isLoading && <LoadingSpiner />}
           {!isLoading &&
+            ghabits?.length > 0 &&
             ghabits.map((habit, index) => (
               <Habit
                 key={index}
@@ -152,7 +153,7 @@ const Homescr = ({ navigation }) => {
                 isGroup={true}
               />
             ))}
-          {!isLoading && ghabits.length === 0 && (
+          {!isLoading && ghabits?.length === 0 && (
             <Text>
               Hãy gia nhập 1 nhóm để gặp những người cùng mục tiêu cùng nhau cố
               gắng nào!
