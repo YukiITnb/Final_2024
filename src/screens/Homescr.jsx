@@ -11,6 +11,7 @@ import { useState, useEffect } from "react";
 import { getHabits, getListHabitGroup } from "../db/services";
 
 import Headerbar from "../components/Headerbar";
+import Notification from "../components/Notification";
 import Habit from "../components/Habit";
 import LoadingSpiner from "../components/LoadingSpiner";
 import HabitTypeModal from "../components/HabitTypeModal";
@@ -65,11 +66,7 @@ const Homescr = ({ navigation }) => {
           <Text style={styles.headertext}>{user.userName}</Text>
           <Text style={styles.headertext}>Points: {user.points}</Text>
         </View>
-        <Headerbar
-          iconUrl={icons.heartOutline}
-          dimension="60%"
-          handlePress={() => setIsAuthenticated(false)}
-        />
+        {/* <Notification /> */}
         <Headerbar
           iconUrl={icons.plus}
           dimension="60%"

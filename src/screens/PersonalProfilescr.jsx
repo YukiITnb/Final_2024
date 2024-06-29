@@ -128,6 +128,21 @@ export default function PersonalProfile() {
                 </View>
               </View>
               <View style={styles.rowWrapper}>
+                <TouchableOpacity style={styles.row}>
+                  <View style={styles.row}>
+                    <Text style={styles.rowLabel}>Change Password</Text>
+
+                    <View style={styles.rowSpacer} />
+
+                    <MaterialCommunityIcons
+                      color="#C6C6C6"
+                      name="chevron-right"
+                      size={20}
+                    />
+                  </View>
+                </TouchableOpacity>
+              </View>
+              <View style={styles.rowWrapper}>
                 <TouchableOpacity
                   style={styles.row}
                   onPress={() => setIsAuthenticated(false)}

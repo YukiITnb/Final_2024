@@ -193,6 +193,54 @@ export const ModalEdit = ({ visible, onRequestClose, habit_id, type }) => {
   );
 };
 
+export const ModalChangePassword = ({ visible, onRequestClose }) => {
+  return (
+    <Modal
+      animationType="fade"
+      transparent={true}
+      visible={visible}
+      onRequestClose={onRequestClose}
+    >
+      <TouchableOpacity
+        style={styles.container}
+        activeOpacity={1}
+        onPress={onRequestClose}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView2}>
+            <View style={styles.input}>
+              <Text style={styles.inputLabel}>Password</Text>
+
+              <TextInput
+                autoCorrect={false}
+                onChangeText={() => {}}
+                placeholder="********"
+                placeholderTextColor="#6b7280"
+                style={styles.inputControl}
+                secureTextEntry={true}
+                value=""
+              />
+            </View>
+            <View style={styles.input}>
+              <Text style={styles.inputLabel}>Re Enter Password</Text>
+
+              <TextInput
+                autoCorrect={false}
+                onChangeText={() => {}}
+                placeholder="********"
+                placeholderTextColor="#6b7280"
+                style={styles.inputControl}
+                secureTextEntry={true}
+                value=""
+              />
+            </View>
+          </View>
+        </View>
+      </TouchableOpacity>
+    </Modal>
+  );
+};
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -234,5 +282,36 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 2,
     borderColor: "white",
+  },
+  input: {
+    marginBottom: 16,
+  },
+  inputLabel: {
+    fontSize: 17,
+    fontWeight: "600",
+    color: "#222",
+    marginBottom: 8,
+  },
+  inputControl: {
+    height: 50,
+    backgroundColor: "#fff",
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    fontSize: 15,
+    fontWeight: "500",
+    color: "#222",
+    borderWidth: 1,
+    borderColor: "#C9D3DB",
+    borderStyle: "solid",
+  },
+  modalView2: {
+    margin: 20,
+    width: "90%",
+    backgroundColor: "#fff",
+    borderRadius: 20,
+    borderWidth: 3,
+    borderColor: "white",
+    padding: 20,
+    alignItems: "center",
   },
 });
