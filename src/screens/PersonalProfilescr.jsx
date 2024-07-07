@@ -11,6 +11,10 @@ import {
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useProgressStore } from "../store/progressStore";
+import * as ImagePicker from "expo-image-picker";
+import * as FileSystem from "expo-file-system";
+import { storage } from "../db/firestore";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 import { updateUser } from "../db/services";
 

@@ -11,6 +11,7 @@ import {
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { getGroups } from "../db/services";
+import { useProgressStore } from "../store/progressStore";
 
 function removeVietnameseTones(str) {
   const accents = [
@@ -57,13 +58,15 @@ export default function PickGroup({ navigation }) {
   const [value, setValue] = useState(0);
   const [groups, setGroups] = useState([]);
   const [isGroupsLoaded, setIsGroupsLoaded] = useState(false);
+  const refreshGroup = useProgressStore((state) => state.refreshGroup);
 
   useEffect(() => {
     getGroups().then((groupList) => {
       setGroups(groupList);
+      console.log(groupList);
       setIsGroupsLoaded(true);
     });
-  }, []);
+  }, [refreshGroup]);
 
   const [input, setInput] = useState("");
   const filteredRows = useMemo(() => {

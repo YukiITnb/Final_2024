@@ -20,12 +20,15 @@ import { icons, COLORS, SIZES, images } from "../constants";
 import { useProgressStore } from "../store/progressStore";
 
 const Homescr = ({ navigation }) => {
-  const [habits, setHabits] = useState([]);
+  // const [habits, setHabits] = useState([]);
   const [ghabits, setGhabits] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const refresh = useProgressStore((state) => state.refresh);
+  const refreshGroup = useProgressStore((state) => state.refreshGroup);
   const [isModalVisible, setModalVisible] = useState(false);
   const user = useProgressStore((state) => state.user);
+  const habits = useProgressStore((state) => state.habits);
+  const setHabits = useProgressStore((state) => state.setHabits);
 
   const handleOpenModal = () => {
     setModalVisible(true);
@@ -40,16 +43,15 @@ const Homescr = ({ navigation }) => {
   );
 
   useEffect(() => {
-    setHabits([]);
-    setGhabits([]);
     getHabits().then((habitList) => {
       setHabits(habitList);
     });
     getListHabitGroup().then((habitList) => {
       setGhabits(habitList);
+      console.log(habitList);
       setIsLoading(false);
     });
-  }, [refresh]);
+  }, [refresh, refreshGroup]);
 
   return (
     <View style={styles.container}>
@@ -101,16 +103,16 @@ const Homescr = ({ navigation }) => {
           {isLoading && <LoadingSpiner />}
           {!isLoading &&
             habits?.length > 0 &&
-            habits.map((habit, index) => (
+            habits.map((habit) => (
               <Habit
-                key={index}
+                key={habit.habit_id}
+                navigation={navigation}
+                isGroup={false}
                 habit_name={habit.habit_name}
                 description={habit.description}
                 color={habit.color}
-                navigation={navigation}
                 habit_id={habit.habit_id}
                 type={habit.type}
-                isGroup={false}
               />
             ))}
           {!isLoading && habits?.length === 0 && (
@@ -138,9 +140,9 @@ const Homescr = ({ navigation }) => {
           {isLoading && <LoadingSpiner />}
           {!isLoading &&
             ghabits?.length > 0 &&
-            ghabits.map((habit, index) => (
+            ghabits.map((habit) => (
               <Habit
-                key={index}
+                key={habit.habit_id}
                 habit_name={habit.habit_name}
                 description={habit.description}
                 color={habit.color}

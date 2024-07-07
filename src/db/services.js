@@ -98,7 +98,8 @@ async function getHabitsname() {
 
 const fetchData = async ({ habit_id, dates }) => {
   try {
-    const habitDoc = await getHabitDocNoId(habit_id);
+    const habitDoc = await getHabitDoc(habit_id, uid);
+
     if (habitDoc) {
       const repeatQuery = query(
         collection(habitDoc.ref, "repeat"),
@@ -107,7 +108,7 @@ const fetchData = async ({ habit_id, dates }) => {
       const repeatDocs = await getDocs(repeatQuery);
       return repeatDocs.docs.map((repeatDoc) => ({
         date: repeatDoc.data().day,
-        progress: repeatDoc.data().progress,
+        progress: repeatDoc.data().progress ? repeatDoc.data().progress : 0,
       }));
     }
   } catch (error) {
@@ -167,6 +168,8 @@ async function getGroups() {
             maxMemNum: data.maxMemNum,
             description: data.description,
             gid: data.gid,
+            owner: data.ownerId == uid,
+            member: data.members.includes(uid),
           };
         }
       })
@@ -396,7 +399,11 @@ async function getListHabitGroup() {
   }
 
   const habitSnapshot = await getDocs(
-    query(collection(db, "Habit"), where("gid", "in", groups))
+    query(
+      collection(db, "Habit"),
+      where("gid", "in", groups),
+      where("uid", "==", uid)
+    )
   );
   if (!habitSnapshot) {
     return null;
@@ -505,7 +512,7 @@ async function createHabit(habitData) {
     let repeatData = {
       day: today,
     };
-    if (habitData.habitType === "CountingTime") {
+    if (habitData.type === "CountingTime") {
       repeatData = {
         ...repeatData,
         break_time: 0,
@@ -516,7 +523,7 @@ async function createHabit(habitData) {
         time_remain:
           (parseInt(habitData.hours) * 60 + parseInt(habitData.minutes)) * 60,
       };
-    } else if (habitData.habitType === "Measure") {
+    } else if (habitData.type === "Measure") {
       repeatData = {
         ...repeatData,
         progress: 0,
@@ -524,7 +531,7 @@ async function createHabit(habitData) {
         done: 0,
         unit: habitData.unit,
       };
-    } else if (habitData.habitType === "YN") {
+    } else if (habitData.type === "YN") {
       repeatData = {
         ...repeatData,
         progress: 0,

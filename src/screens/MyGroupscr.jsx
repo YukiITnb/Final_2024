@@ -9,16 +9,18 @@ import {
 } from "react-native";
 
 import { getMyGroups } from "../db/services";
+import { useProgressStore } from "../store/progressStore";
 
 export default function Mygroup({ navigation }) {
   const [value, setValue] = useState(0);
   const [groups, setGroups] = useState([]);
+  const refreshGroup = useProgressStore((state) => state.refreshGroup);
 
   useEffect(() => {
     getMyGroups().then((groupList) => {
       setGroups(groupList);
     });
-  }, []);
+  }, [refreshGroup]);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fafafa" }}>

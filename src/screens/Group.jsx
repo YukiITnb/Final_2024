@@ -32,10 +32,13 @@ export default function Group({ navigation, route }) {
   const [user, setUser] = useState(null);
   const [habit, setHabit] = useState(null);
   const uid = useProgressStore((state) => state.uid);
+  const refreshGroup = useProgressStore((state) => state.refreshGroup);
+  const setRefreshGroup = useProgressStore((state) => state.setRefreshGroup);
 
   useEffect(() => {
     getGroupByGid(gid).then((groupData) => {
       setGroup(groupData);
+      console.log(groupData);
       if (groupData) {
         getUserById(groupData.ownerId).then((userData) => {
           setUser(userData);
@@ -44,6 +47,7 @@ export default function Group({ navigation, route }) {
       if (groupData.habit_id != "") {
         getHabitById(groupData.habit_id).then((habitData) => {
           setHabit(habitData);
+          console.log("abcdf", habit.data);
         });
       }
     });
@@ -115,10 +119,13 @@ export default function Group({ navigation, route }) {
                       const updateData = { groups: arrayRemove(group.gid) };
                       updateUser(uid, updateData);
                       const updateData2 = {
-                        members: arrayRemove(user.uid),
+                        members: arrayRemove(uid),
                         curMemNum: group.curMemNum - 1,
                       };
                       updateGroup(group.gid, updateData2);
+                      setRefreshGroup(!refreshGroup);
+                      navigation.goBack();
+                      alert("You have left the group successfully!");
                     }}
                   >
                     <View
@@ -140,13 +147,14 @@ export default function Group({ navigation, route }) {
                       const updateData = { groups: arrayUnion(group.gid) };
                       updateUser(uid, updateData);
                       const updateData2 = {
-                        members: arrayUnion(user.uid),
+                        members: arrayUnion(uid),
                         curMemNum: group.curMemNum + 1,
                       };
                       updateGroup(group.gid, updateData2);
-
                       const newHabit = { ...habit.data, uid: uid };
                       createHabit(newHabit);
+                      setRefreshGroup(!refreshGroup);
+                      navigation.goBack();
                       alert("You have joined the group successfully!");
                     }}
                   >
