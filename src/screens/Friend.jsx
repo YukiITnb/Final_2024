@@ -76,7 +76,7 @@ export default function Friend({ navigation }) {
                         numberOfLines={1}
                         style={styles.cardContent}
                       >
-                        test
+                        {message ? message : "online"}
                       </Text>
                     </View>
 

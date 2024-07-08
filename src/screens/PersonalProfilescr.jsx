@@ -17,6 +17,7 @@ import { storage } from "../db/firestore";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 import { updateUser } from "../db/services";
+import { ModalChangePassword } from "../components/Modal";
 
 export default function PersonalProfile() {
   const [form, setForm] = useState({
@@ -24,9 +25,88 @@ export default function PersonalProfile() {
     pushNotifications: false,
   });
   const user = useProgressStore((state) => state.user);
+  const setuser = useProgressStore((state) => state.setUser);
   const setIsAuthenticated = useProgressStore(
     (state) => state.setIsAuthenticated
   );
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [isSave, setSave] = useState(false);
+  const handleOpenModal = () => {
+    setModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalVisible(false);
+  };
+  const [image, setImage] = useState(null);
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.cancelled) {
+      setImage(result.assets[0].uri);
+      setSave(true);
+    }
+  };
+
+  const handleUploadAvatar = async () => {
+    try {
+      const { uri } = await FileSystem.getInfoAsync(image);
+      const blob = await new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.onload = function () {
+          resolve(xhr.response);
+        };
+        xhr.onerror = function (e) {
+          console.log(e);
+          reject(new TypeError("Network request failed"));
+        };
+        xhr.responseType = "blob";
+        xhr.open("GET", uri, true);
+        xhr.send(null);
+      });
+      const fileName = image.substring(image.lastIndexOf("/") + 1);
+      const storageRef = ref(storage, `images/${fileName}`);
+      const uploadTask = uploadBytesResumable(storageRef, blob);
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log(`Upload is ${progress}% done`);
+          switch (snapshot.state) {
+            case "paused":
+              console.log("Upload is paused");
+              break;
+            case "running":
+              console.log("Upload is running");
+              break;
+          }
+        },
+        (error) => {
+          console.log(error);
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then((url) => {
+            console.log("File available at", url);
+            setImage(null);
+            updateUser(user.uid, { avatar: url }).then(() => {
+              alert("Avatar updated");
+              setSave(false);
+              setuser({ ...user, avatar: url });
+            });
+          });
+        }
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#f8f8f8" }}>
@@ -44,7 +124,11 @@ export default function PersonalProfile() {
             <Image
               alt=""
               source={{
-                uri: user.avatar ? user.avatar : "https://i.pravatar.cc/300",
+                uri: image
+                  ? image
+                  : user.avatar
+                  ? user.avatar
+                  : "https://i.pravatar.cc/300",
               }}
               style={styles.profileAvatar}
             />
@@ -55,21 +139,30 @@ export default function PersonalProfile() {
               <Text style={styles.profileHandle}>@{user.userName}</Text>
             </View>
           </View>
-
-          <TouchableOpacity
-            onPress={() => {
-              // handle onPress
-            }}
-          >
-            <View style={styles.profileAction}>
-              <Text style={styles.profileActionText}>Edit Profile</Text>
-              <MaterialCommunityIcons
-                name="account-edit-outline"
-                size={16}
-                color="#fff"
-              />
-            </View>
-          </TouchableOpacity>
+          {!isSave && (
+            <TouchableOpacity onPress={pickImage}>
+              <View style={styles.profileAction}>
+                <Text style={styles.profileActionText}>Change Avatar</Text>
+                <MaterialCommunityIcons
+                  name="account-edit-outline"
+                  size={16}
+                  color="#fff"
+                />
+              </View>
+            </TouchableOpacity>
+          )}
+          {isSave && (
+            <TouchableOpacity onPress={handleUploadAvatar}>
+              <View style={styles.profileAction}>
+                <Text style={styles.profileActionText}>Save Avatar</Text>
+                <MaterialCommunityIcons
+                  name="account-edit-outline"
+                  size={16}
+                  color="#fff"
+                />
+              </View>
+            </TouchableOpacity>
+          )}
         </View>
 
         <ScrollView>
@@ -132,18 +225,22 @@ export default function PersonalProfile() {
                 </View>
               </View>
               <View style={styles.rowWrapper}>
-                <TouchableOpacity style={styles.row}>
-                  <View style={styles.row}>
-                    <Text style={styles.rowLabel}>Change Password</Text>
+                <TouchableOpacity
+                  style={styles.row}
+                  onPress={() => handleOpenModal()}
+                >
+                  <Text style={styles.rowLabel}>Change Password</Text>
+                  <ModalChangePassword
+                    visible={isModalVisible}
+                    onRequestClose={handleCloseModal}
+                  />
+                  <View style={styles.rowSpacer} />
 
-                    <View style={styles.rowSpacer} />
-
-                    <MaterialCommunityIcons
-                      color="#C6C6C6"
-                      name="chevron-right"
-                      size={20}
-                    />
-                  </View>
+                  <MaterialCommunityIcons
+                    color="#C6C6C6"
+                    name="chevron-right"
+                    size={20}
+                  />
                 </TouchableOpacity>
               </View>
               <View style={styles.rowWrapper}>

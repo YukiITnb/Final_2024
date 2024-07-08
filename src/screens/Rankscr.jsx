@@ -12,11 +12,12 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useProgressStore } from "../store/progressStore";
 import { db } from "../db/firestore";
 import { useEffect, useState } from "react";
-import { getUserById } from "../db/services";
+import { getUserById, addFriend } from "../db/services";
 
 export default function Rank({ navigation, route }) {
   const { group } = route.params;
   const [members, setMembers] = useState([]);
+  const userId = useProgressStore((state) => state.uid);
   useEffect(() => {
     const getUsers = async () => {
       const users = [];
@@ -30,6 +31,16 @@ export default function Rank({ navigation, route }) {
     };
     getUsers();
   }, []);
+
+  const addFriendHandler = async (uid) => {
+    try {
+      await addFriend(userId, uid);
+      alert("Đã kết bạn thành công");
+    } catch (error) {
+      alert("Đã có lỗi xảy ra");
+    }
+  };
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <View style={styles.container}>
@@ -47,7 +58,10 @@ export default function Rank({ navigation, route }) {
             .map(({ userName, avatar, points, uid }, index) => {
               return (
                 <View key={index} style={styles.cardWrapper}>
-                  <TouchableOpacity onPress={() => {}} style={styles.card}>
+                  <TouchableOpacity
+                    onPress={() => addFriendHandler(uid)}
+                    style={styles.card}
+                  >
                     <Image
                       alt=""
                       resizeMode="cover"
@@ -66,6 +80,16 @@ export default function Rank({ navigation, route }) {
                         Points: {points}
                       </Text>
                     </View>
+                    {userId != uid && (
+                      <View style={styles.cardIcon}>
+                        <MaterialCommunityIcons
+                          name="account-plus"
+                          size={24}
+                          color="black"
+                        />
+                        <Text style={styles.iconText}>Thêm bạn</Text>
+                      </View>
+                    )}
                   </TouchableOpacity>
                 </View>
               );

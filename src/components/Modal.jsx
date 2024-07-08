@@ -8,8 +8,14 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import { useProgressStore } from "../store/progressStore";
-import { updateHabitRepeat, deleteHabit } from "../db/services";
+import { updateHabitRepeat, deleteHabit, updateUser } from "../db/services";
 import { useNavigation } from "@react-navigation/native";
+import {
+  updatePassword,
+  EmailAuthProvider,
+  reauthenticateWithCredential,
+} from "firebase/auth";
+import { auth } from "../db/firestore";
 
 export const ModalYN = ({ visible, onRequestClose, habit_id }) => {
   const setRefresh = useProgressStore((state) => state.setRefresh);
@@ -194,6 +200,35 @@ export const ModalEdit = ({ visible, onRequestClose, habit_id, type }) => {
 };
 
 export const ModalChangePassword = ({ visible, onRequestClose }) => {
+  const setIsAuthenticated = useProgressStore(
+    (state) => state.setIsAuthenticated
+  );
+  const uid = useProgressStore((state) => state.uid);
+  const oldPassword = useProgressStore((state) => state.oldPassword);
+  const [form, setForm] = useState({
+    password: "",
+    rePassword: "",
+  });
+  const handleChangePassword = async () => {
+    if (form.password !== form.rePassword) {
+      alert("Password not match");
+      return;
+    }
+    const user = auth.currentUser;
+    try {
+      const credential = EmailAuthProvider.credential(user.email, oldPassword);
+      await reauthenticateWithCredential(user, credential);
+      updatePassword(user, form.password);
+      updateUser(uid, { password: form.password });
+      alert("Password changed successfully");
+      onRequestClose();
+      setIsAuthenticated(false);
+    } catch (error) {
+      console.error(error);
+      alert("Change password failed: " + error.message);
+      return;
+    }
+  };
   return (
     <Modal
       animationType="fade"
@@ -206,33 +241,38 @@ export const ModalChangePassword = ({ visible, onRequestClose }) => {
         activeOpacity={1}
         onPress={onRequestClose}
       >
-        <View style={styles.centeredView}>
+        <View style={[styles.centeredView, { width: "80%" }]}>
           <View style={styles.modalView2}>
-            <View style={styles.input}>
+            <View style={[styles.input, { width: "100%" }]}>
               <Text style={styles.inputLabel}>Password</Text>
-
               <TextInput
                 autoCorrect={false}
-                onChangeText={() => {}}
                 placeholder="********"
                 placeholderTextColor="#6b7280"
                 style={styles.inputControl}
                 secureTextEntry={true}
-                value=""
+                value={form.password}
+                onChangeText={(password) => setForm({ ...form, password })}
               />
             </View>
-            <View style={styles.input}>
-              <Text style={styles.inputLabel}>Re Enter Password</Text>
-
+            <View style={[styles.input, { width: "100%" }]}>
+              <Text style={styles.inputLabel}>ReEnter Password</Text>
               <TextInput
                 autoCorrect={false}
-                onChangeText={() => {}}
+                onChangeText={(rePassword) => setForm({ ...form, rePassword })}
                 placeholder="********"
                 placeholderTextColor="#6b7280"
                 style={styles.inputControl}
                 secureTextEntry={true}
-                value=""
+                value={form.rePassword}
               />
+            </View>
+            <View style={[styles.formAction, { width: "100%" }]}>
+              <TouchableOpacity onPress={handleChangePassword}>
+                <View style={styles.btn}>
+                  <Text style={styles.btnText}>Save</Text>
+                </View>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
@@ -306,12 +346,34 @@ const styles = StyleSheet.create({
   },
   modalView2: {
     margin: 20,
-    width: "90%",
+    width: "100%",
     backgroundColor: "#fff",
     borderRadius: 20,
     borderWidth: 3,
     borderColor: "white",
     padding: 20,
     alignItems: "center",
+  },
+  formAction: {
+    marginTop: 4,
+    marginBottom: 16,
+  },
+  /** Button */
+  btn: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 30,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderWidth: 1,
+    backgroundColor: "#075eec",
+    borderColor: "#075eec",
+  },
+  btnText: {
+    fontSize: 18,
+    lineHeight: 26,
+    fontWeight: "600",
+    color: "#fff",
   },
 });

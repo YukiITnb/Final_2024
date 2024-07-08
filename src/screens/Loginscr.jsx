@@ -25,6 +25,7 @@ export default function Loginscr({ navigation }) {
   );
   const setUid = useProgressStore((state) => state.setUid);
   const setUserData = useProgressStore((state) => state.setUser);
+  const setOldPassword = useProgressStore((state) => state.setOldPassword);
 
   const handleLogin = async () => {
     try {
@@ -37,6 +38,7 @@ export default function Loginscr({ navigation }) {
       setUid(user.uid);
       const userData = await getUserById(user.uid);
       setUserData(userData);
+      setOldPassword(form.password);
       setIsAuthenticated(true);
       alert("Đăng nhập thành công!");
     } catch (error) {

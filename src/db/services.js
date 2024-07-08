@@ -545,6 +545,16 @@ async function createHabit(habitData) {
   }
 }
 
+async function addFriend(uid1, uid2) {
+  try {
+    const friendCollection = collection(db, "Friend");
+    await addDoc(friendCollection, { uid1, uid2 });
+    console.log("Friend added successfully");
+  } catch (error) {
+    console.error("Error adding friend:", error);
+  }
+}
+
 export {
   getHabits,
   getHabitsname,
@@ -569,4 +579,5 @@ export {
   updatePost,
   getFriendsByUid,
   createHabit,
+  addFriend,
 };
