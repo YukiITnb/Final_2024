@@ -19,6 +19,10 @@ import { useNavigation } from "@react-navigation/native";
 const PostFooter = ({ data }) => {
   const navigation = useNavigation();
   const [liked, setLiked] = useState(false);
+  const [dataForm, setDataForm] = useState({
+    comments: data.comments,
+    reaction: data.reaction,
+  });
   useEffect(() => {
     const checkLike = async () => {
       const likeQuery = query(
@@ -54,6 +58,10 @@ const PostFooter = ({ data }) => {
       setLiked(false);
     } else {
       // If the like doesn't exist, create it
+      setDataForm({
+        ...dataForm,
+        reaction: dataForm.reaction + 1,
+      });
       const newLike = {
         uid: uid,
         pid: pid,
@@ -76,9 +84,9 @@ const PostFooter = ({ data }) => {
             size={25}
             color={COLORS.green}
           />
-          <Text style={styles.reactionCount}>{data.reaction}</Text>
+          <Text style={styles.reactionCount}>{dataForm.reaction}</Text>
         </View>
-        <Text style={styles.reactionCount}>{data.comments} comments</Text>
+        <Text style={styles.reactionCount}>{dataForm.comments} comments</Text>
       </View>
       <View style={styles.userActionSec}>
         <View style={styles.row}>

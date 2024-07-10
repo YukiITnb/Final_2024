@@ -68,7 +68,7 @@ const Homescr = ({ navigation }) => {
           <Text style={styles.headertext}>{user.userName}</Text>
           <Text style={styles.headertext}>Points: {user.points}</Text>
         </View>
-        {/* <Notification /> */}
+        <Notification />
         <Headerbar
           iconUrl={icons.plus}
           dimension="60%"

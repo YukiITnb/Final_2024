@@ -15,6 +15,7 @@ import CommentScreen from "./src/screens/Commentscr";
 import Friend from "./src/screens/Friend";
 import Chat from "./src/screens/Chatscr";
 import PersonalProfile from "./src/screens/PersonalProfilescr";
+import GroupProfile from "./src/screens/GroupProfilescr";
 import UpdateHabit from "./src/screens/UpdateHabitscr";
 import Rank from "./src/screens/Rankscr";
 import { useProgressStore } from "./src/store/progressStore";
@@ -121,6 +122,11 @@ export default function App() {
             <Stack.Screen
               name="Rank"
               component={Rank}
+              options={{ animation: "fade" }}
+            />
+            <Stack.Screen
+              name="GroupProfile"
+              component={GroupProfile}
               options={{ animation: "fade" }}
             />
           </>

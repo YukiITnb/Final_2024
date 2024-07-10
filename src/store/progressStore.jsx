@@ -46,6 +46,8 @@ export const useProgressStore = create(
         })),
       refreshGroup: false,
       setRefreshGroup: (refreshGroup) => set({ refreshGroup }),
+      refreshpost: false,
+      setRefreshPost: (refreshPost) => set({ refreshPost }),
       oldPassword: "",
       setOldPassword: (oldPassword) => set({ oldPassword }),
     }),

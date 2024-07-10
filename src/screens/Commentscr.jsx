@@ -13,7 +13,7 @@ import {
 import { db } from "../db/firestore";
 import CmtItem from "../components/CommentItem";
 import { useProgressStore } from "../store/progressStore";
-import { updatePost } from "../db/services";
+import { updatePost, createNoti } from "../db/services";
 
 const CommentScreen = ({ route }) => {
   const { data } = route.params;
@@ -68,6 +68,14 @@ const CommentScreen = ({ route }) => {
     await updatePost(data.pid, updatedPost);
     setComments((prevComments) => [...prevComments, { ...newCmt }]);
     setContent("");
+    const notidata = {
+      uid: data.uid,
+      nid: Math.random().toString(36).substring(2, 15),
+      message: "a member has comment in your post",
+      createdAt: new Date().getTime(),
+      isReaded: false,
+    };
+    createNoti(notidata);
   };
 
   return (

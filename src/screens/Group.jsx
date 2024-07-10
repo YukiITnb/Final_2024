@@ -24,6 +24,8 @@ import {
   updateUser,
   updateGroup,
   createHabit,
+  deleteHabit,
+  createNoti,
 } from "../db/services";
 
 export default function Group({ navigation, route }) {
@@ -47,7 +49,6 @@ export default function Group({ navigation, route }) {
       if (groupData.habit_id != "") {
         getHabitById(groupData.habit_id).then((habitData) => {
           setHabit(habitData);
-          console.log("abcdf", habit.data);
         });
       }
     });
@@ -97,16 +98,16 @@ export default function Group({ navigation, route }) {
                 {owner && !member && (
                   <TouchableOpacity
                     onPress={() => {
-                      // Handle owner press event
+                      navigation.navigate("GroupProfile", { group: group });
                     }}
                   >
                     <View
                       style={[
                         styles.action,
-                        { backgroundColor: "#FFC0CB", width: 60 },
+                        { backgroundColor: "#f7f7f7", width: 60 },
                       ]}
                     >
-                      <Text style={{ color: "#fff", fontWeight: "bold" }}>
+                      <Text style={{ color: "#000", fontWeight: "bold" }}>
                         Setting
                       </Text>
                     </View>
@@ -118,11 +119,20 @@ export default function Group({ navigation, route }) {
                       // Handle member press event
                       const updateData = { groups: arrayRemove(group.gid) };
                       updateUser(uid, updateData);
+                      deleteHabit(group.habit_id);
                       const updateData2 = {
                         members: arrayRemove(uid),
                         curMemNum: group.curMemNum - 1,
                       };
                       updateGroup(group.gid, updateData2);
+                      const notidata = {
+                        uid: group.ownerId,
+                        nid: Math.random().toString(36).substring(2, 15),
+                        message: "a member has left the group",
+                        createdAt: new Date().getTime(),
+                        isReaded: false,
+                      };
+                      createNoti(notidata);
                       setRefreshGroup(!refreshGroup);
                       navigation.goBack();
                       alert("You have left the group successfully!");
@@ -131,10 +141,10 @@ export default function Group({ navigation, route }) {
                     <View
                       style={[
                         styles.action,
-                        { backgroundColor: "#FFC0CB", width: 60 },
+                        { backgroundColor: "#f7f7f7", width: 60 },
                       ]}
                     >
-                      <Text style={{ color: "#fff", fontWeight: "bold" }}>
+                      <Text style={{ color: "#000", fontWeight: "bold" }}>
                         Leave
                       </Text>
                     </View>
@@ -153,6 +163,14 @@ export default function Group({ navigation, route }) {
                       updateGroup(group.gid, updateData2);
                       const newHabit = { ...habit.data, uid: uid };
                       createHabit(newHabit);
+                      const notidata = {
+                        uid: group.ownerId,
+                        nid: Math.random().toString(36).substring(2, 15),
+                        message: "a member has join the group",
+                        createdAt: new Date().getTime(),
+                        isReaded: false,
+                      };
+                      createNoti(notidata);
                       setRefreshGroup(!refreshGroup);
                       navigation.goBack();
                       alert("You have joined the group successfully!");
@@ -161,10 +179,10 @@ export default function Group({ navigation, route }) {
                     <View
                       style={[
                         styles.action,
-                        { backgroundColor: "#FFC0CB", width: 60 },
+                        { backgroundColor: "#f7f7f7", width: 60 },
                       ]}
                     >
-                      <Text style={{ color: "#fff", fontWeight: "bold" }}>
+                      <Text style={{ color: "#000", fontWeight: "bold" }}>
                         Apply
                       </Text>
                     </View>

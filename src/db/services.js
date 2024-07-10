@@ -555,6 +555,16 @@ async function addFriend(uid1, uid2) {
   }
 }
 
+async function createNoti(data) {
+  try {
+    const notiCollection = collection(db, "Notifications");
+    await addDoc(notiCollection, data);
+    console.log("Notification added successfully");
+  } catch (error) {
+    console.error("Error adding notification:", error);
+  }
+}
+
 export {
   getHabits,
   getHabitsname,
@@ -580,4 +590,5 @@ export {
   getFriendsByUid,
   createHabit,
   addFriend,
+  createNoti,
 };
