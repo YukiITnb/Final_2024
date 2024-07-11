@@ -12,7 +12,12 @@ import {
 import FeatherIcon from "react-native-vector-icons/Feather";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useProgressStore } from "../store/progressStore";
-import { updateGroup, updateUser, deleteHabit } from "../db/services";
+import {
+  updateGroup,
+  updateUser,
+  deleteHabit,
+  getUserById,
+} from "../db/services";
 import { arrayUnion } from "firebase/firestore";
 
 export default function GroupProfile({ navigation, route }) {
@@ -20,6 +25,7 @@ export default function GroupProfile({ navigation, route }) {
   const [members, setMembers] = useState([]);
   const refreshGroup = useProgressStore((state) => state.refreshGroup);
   const setRefreshGroup = useProgressStore((state) => state.setRefreshGroup);
+  const userId = useProgressStore((state) => state.user.uid);
   useEffect(() => {
     const getUsers = async () => {
       const users = [];

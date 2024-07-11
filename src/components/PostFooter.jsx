@@ -15,6 +15,7 @@ import {
 import { db } from "../db/firestore";
 import { updatePost } from "../db/services";
 import { useNavigation } from "@react-navigation/native";
+import { useProgressStore } from "../store/progressStore";
 
 const PostFooter = ({ data }) => {
   const navigation = useNavigation();
@@ -23,11 +24,12 @@ const PostFooter = ({ data }) => {
     comments: data.comments,
     reaction: data.reaction,
   });
+  const uid = useProgressStore((state) => state.user.uid);
   useEffect(() => {
     const checkLike = async () => {
       const likeQuery = query(
         collection(db, "Likes"),
-        where("uid", "==", data.uid),
+        where("uid", "==", uid),
         where("pid", "==", data.pid)
       );
       const likeSnapshot = await getDocs(likeQuery);
@@ -94,7 +96,7 @@ const PostFooter = ({ data }) => {
             name="cards-heart-outline"
             size={25}
             color={liked ? COLORS.green : COLORS.grey}
-            onPress={() => handleLike(data.uid, data.pid)}
+            onPress={() => handleLike(uid, data.pid)}
           />
           <Text style={styles.reactionCount}>Like</Text>
         </View>

@@ -17,6 +17,7 @@ import { updatePost, createNoti } from "../db/services";
 
 const CommentScreen = ({ route }) => {
   const { data } = route.params;
+  console.log(data);
   const [comments, setComments] = useState([]);
   const [content, setContent] = useState("");
   const uid = useProgressStore((state) => state.user.uid);
@@ -75,7 +76,7 @@ const CommentScreen = ({ route }) => {
       createdAt: new Date().getTime(),
       isReaded: false,
     };
-    createNoti(notidata);
+    await createNoti(notidata);
   };
 
   return (

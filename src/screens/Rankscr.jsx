@@ -12,12 +12,13 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useProgressStore } from "../store/progressStore";
 import { db } from "../db/firestore";
 import { useEffect, useState } from "react";
-import { getUserById, addFriend } from "../db/services";
+import { getUserById, addFriend, getFriendsByUid } from "../db/services";
 
 export default function Rank({ navigation, route }) {
   const { group } = route.params;
   const [members, setMembers] = useState([]);
   const userId = useProgressStore((state) => state.uid);
+  const [friendList, setFriendList] = useState([]);
   useEffect(() => {
     const getUsers = async () => {
       const users = [];
@@ -29,7 +30,13 @@ export default function Rank({ navigation, route }) {
       users.push(owner);
       setMembers(users);
     };
+    const getFriends = async () => {
+      const friends = await getFriendsByUid(userId);
+      console.log(friends);
+      setFriendList(friends);
+    };
     getUsers();
+    getFriends();
   }, []);
 
   const addFriendHandler = async (uid) => {
@@ -39,6 +46,10 @@ export default function Rank({ navigation, route }) {
     } catch (error) {
       alert("Đã có lỗi xảy ra");
     }
+  };
+
+  const containsUid = (dataList, uid) => {
+    return dataList.some((item) => item.uid1 === uid || item.uid2 === uid);
   };
 
   return (
@@ -80,16 +91,19 @@ export default function Rank({ navigation, route }) {
                         Points: {points}
                       </Text>
                     </View>
-                    {userId != uid && (
-                      <View style={styles.cardIcon}>
-                        <MaterialCommunityIcons
-                          name="account-plus"
-                          size={24}
-                          color="black"
-                        />
-                        <Text style={styles.iconText}>Thêm bạn</Text>
-                      </View>
-                    )}
+                    {userId != uid &&
+                      !friendList.some(
+                        (item) => item.uid1 === uid || item.uid2 === uid
+                      ) && (
+                        <View style={styles.cardIcon}>
+                          <MaterialCommunityIcons
+                            name="account-plus"
+                            size={24}
+                            color="black"
+                          />
+                          <Text style={styles.iconText}>Thêm bạn</Text>
+                        </View>
+                      )}
                   </TouchableOpacity>
                 </View>
               );
